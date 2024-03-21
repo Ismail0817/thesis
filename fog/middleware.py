@@ -121,8 +121,8 @@ def process_data():
         deploy_pod()
 
         # deploy pod in fog
-        # response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "deploy_pod")
-        # print(response_from_fog)
+        response_from_cloud = send_api_request_cloud('http://192.168.10.147:5000/api', "deploy_pod")
+        print(response_from_cloud)
 
         return jsonify({'reply': 'pod deployed'})
     elif 'message' in data and data['message'] == 'deploy_service':
@@ -130,8 +130,8 @@ def process_data():
         deploy_external_service()
 
         # deploy service in fog
-        # response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "deploy_service")
-        # print(response_from_fog)
+        response_from_cloud = send_api_request_cloud('http://192.168.10.147:5000/api', "deploy_service")
+        print(response_from_cloud)
 
         return jsonify({'reply': 'service deployed'})
     

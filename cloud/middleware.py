@@ -11,6 +11,47 @@ config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 # Create Kubernetes API client
 apps_v1 = client.AppsV1Api()
 
+def deploy_pod():
+    # Load kubeconfig file to authenticate with the Kubernetes cluster
+    # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+
+    # Load all YAML documents from the file
+    with open("manifests/deployment.yaml", "r") as file:
+        deployment_manifests = yaml.load_all(file, Loader=yaml.SafeLoader)
+
+        # Create Kubernetes API client
+        # apps_v1 = client.AppsV1Api()
+
+        # Create the Deployments
+        for deployment_manifest in deployment_manifests:
+            try:
+                apps_v1.create_namespaced_deployment(
+                    body=deployment_manifest, namespace="default"
+                )
+                print("Deployment created successfully!")
+            except Exception as e:
+                print(f"Error creating Deployment: {e}")
+
+def deploy_external_service():
+    # Load kubeconfig file to authenticate with the Kubernetes cluster
+    # config.load_kube_config(config_file="/etc/rancher/k3s/k3s.yaml")
+
+    # Load YAML file containing the service manifest
+    with open("manifests/service.yaml", "r") as file:
+        service_manifest = yaml.safe_load(file)
+
+    # Create Kubernetes API client
+    core_v1 = client.CoreV1Api()
+
+    try:
+        # Create the Service
+        core_v1.create_namespaced_service(
+            body=service_manifest, namespace="default"
+        )
+        print("Service created successfully!")
+    except Exception as e:
+        print(f"Error creating Service: {e}")
+
 def run_shell_script(script_path):
     try:
         # Run the shell script using subprocess and capture output
@@ -62,6 +103,17 @@ def process_data():
                 print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
 
         return jsonify({'reply': negotiation, 'data': node_data})
+    
+    elif 'message' in data and data['message'] == 'deploy_pod':
+        # If the message is 'hello', reply with 'hello world'
+        deploy_pod()
+        return jsonify({'reply': 'pod deployed'})
+    
+    elif 'message' in data and data['message'] == 'deploy_service':
+        # If the message is not as expected, return an error
+        deploy_external_service()
+        return jsonify({'reply': 'service deployed'})
+
     else:
         return jsonify({'reply': 'invalid message'})
 
