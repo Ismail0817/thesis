@@ -69,6 +69,10 @@ def process_data():
             else:
                 print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
 
+        # negotiation with fog
+        response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "negotiate")
+        print(response_from_fog)
+
         return jsonify({'reply': negotiation, 'data': node_data})
     else:
         return jsonify({'reply': 'invalid message'})
