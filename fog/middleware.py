@@ -29,8 +29,8 @@ def run_shell_script(script_path):
 @app.route('/api', methods=['POST'])
 def process_data():
     data = request.get_json()  # Get the data from the request
-    print(data['message'])
-    
+    # print(data['message'])
+
     # response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api', "edge")
 
     # print(response_from_cloud)
@@ -70,7 +70,7 @@ def process_data():
                 print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
 
         # negotiation with cloud
-        response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api', "negotiate")
+        response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api', {"message": "negotiate"})
         print(response_from_cloud)
 
         return jsonify({'reply': negotiation, 'data': node_data})
