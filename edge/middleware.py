@@ -29,7 +29,7 @@ def run_shell_script(script_path):
 @app.route('/api', methods=['POST'])
 def process_data():
     data = request.get_json()  # Get the data from the request
-
+    print(data['message'])
     # response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "edge")
 
     # print(response_from_fog)
