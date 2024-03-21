@@ -15,4 +15,4 @@ spec:
       - name: test
         image: ismailshojeeb/test:v2
         ports:
-        - containerPort: 5001
+        - containerPort: 5000

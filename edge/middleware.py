@@ -71,7 +71,7 @@ def run_shell_script(script_path):
 @app.route('/api', methods=['POST'])
 def process_data():
     data = request.get_json()  # Get the data from the request
-    print(data['message'])
+    # print(data['message'])
     # response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "edge")
 
     # print(response_from_fog)
@@ -119,10 +119,20 @@ def process_data():
     elif 'message' in data and data['message'] == 'deploy_pod':
         # If the message is 'hello', reply with 'hello world'
         deploy_pod()
+
+        # deploy pod in fog
+        response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "deploy_pod")
+        print(response_from_fog)
+
         return jsonify({'reply': 'pod deployed'})
     elif 'message' in data and data['message'] == 'deploy_service':
         # If the message is not as expected, return an error
         deploy_external_service()
+
+        # deploy service in fog
+        response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "deploy_service")
+        print(response_from_fog)
+
         return jsonify({'reply': 'service deployed'})
     else:
         return jsonify({'reply': 'invalid message'})
