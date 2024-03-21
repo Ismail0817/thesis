@@ -29,57 +29,57 @@ def run_shell_script(script_path):
 @app.route('/api', methods=['POST'])
 def process_data():
     data = request.get_json()  # Get the data from the request
-    # print(data['message'])
+    print(data['message'])
 
     # response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api', "edge")
 
     # print(response_from_cloud)
 
     # # Process the data and generate a response
-    # response = {'message': 'Data received successfully', 'data': data}
-    # return jsonify(response)
-    if 'message' in data and data['message'] == 'negotiate':
-        script_path = "/root/thesis/edge/bash.sh" 
-        script_output = run_shell_script(script_path)
+    response = {'message': 'Data received successfully', 'data': data}
+    return jsonify(response)
+    # if 'message' in data and data['message'] == 'negotiate':
+    #     script_path = "/root/thesis/edge/bash.sh" 
+    #     script_output = run_shell_script(script_path)
         
-        # Split the string into lines
-        lines = script_output.strip().split('\n')
+    #     # Split the string into lines
+    #     lines = script_output.strip().split('\n')
 
-        # Extract headers
-        headers = lines[0].split()
+    #     # Extract headers
+    #     headers = lines[0].split()
 
-        # Initialize dictionaries to store data for each node
-        node_data = {}
+    #     # Initialize dictionaries to store data for each node
+    #     node_data = {}
 
-        # Process data for each line
-        for line in lines[1:]:
-            # Split line into fields
-            fields = line.split()
-            node_name = fields[0]
-            node_values = {
-                headers[i]: fields[i] for i in range(1, len(headers))
-            }
-            node_data[node_name] = node_values
+    #     # Process data for each line
+    #     for line in lines[1:]:
+    #         # Split line into fields
+    #         fields = line.split()
+    #         node_name = fields[0]
+    #         node_values = {
+    #             headers[i]: fields[i] for i in range(1, len(headers))
+    #         }
+    #         node_data[node_name] = node_values
         
-        negotiation = "unsuccessful"
-        for node_name, values in node_data.items():
-            if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 50:
-                print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
-                negotiation = "successful"
-            else:
-                print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
+    #     negotiation = "unsuccessful"
+    #     for node_name, values in node_data.items():
+    #         if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 50:
+    #             print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
+    #             negotiation = "successful"
+    #         else:
+    #             print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
 
-        # negotiation with cloud
-        response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api', {"message": "negotiate"})
-        print(response_from_cloud)
+    #     # negotiation with cloud
+    #     response_from_cloud = send_api_request_cloud('http://192.168.10.145:5000/api',  "negotiate")
+    #     print(response_from_cloud)
 
-        return jsonify({'reply': negotiation, 'data': node_data})
-    else:
-        return jsonify({'reply': 'invalid message'})
+    #     return jsonify({'reply': negotiation, 'data': node_data})
+    # else:
+    #     return jsonify({'reply': 'invalid message'})
 
 
 def send_api_request_cloud(url, data):
-        response = requests.post(url, json=data)
+        response = requests.post(url, json= data)
         return response.json()
 
 if __name__ == '__main__':

@@ -70,7 +70,7 @@ def process_data():
                 print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
 
         # negotiation with fog
-        response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', {"message": "negotiate"})
+        response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "negotiate")
         print(response_from_fog)
 
         return jsonify({'reply': negotiation, 'data': node_data})
@@ -79,7 +79,7 @@ def process_data():
 
 
 def send_api_request_fog(url, data):
-        response = requests.post(url, json=data)
+        response = requests.post(url, json= {"message": data})
         return response.json()
 
 
