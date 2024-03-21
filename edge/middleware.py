@@ -39,8 +39,9 @@ def process_data():
     # return jsonify(response)
 
     if 'message' in data and data['message'] == 'negotiate':
-        script_path = "/home/pi/cloud/bash.sh" 
+        script_path = "/root/thesis/edge/bash.sh" 
         script_output = run_shell_script(script_path)
+        
         # Split the string into lines
         lines = script_output.strip().split('\n')
 
