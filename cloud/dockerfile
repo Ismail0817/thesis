@@ -17,4 +17,4 @@ EXPOSE 5000
 EXPOSE 5001
 
 # Run api_and_socket.py when the container launches
-CMD ["python", "server.py"]
+CMD ["python", "server1.py"]
