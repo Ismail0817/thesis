@@ -16,4 +16,4 @@ spec:
         image: ismailshojeeb/server:V1
         ports:
         - containerPort: 5000
-        - containerPort: 5000
+        - containerPort: 5001
