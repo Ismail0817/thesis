@@ -16,7 +16,7 @@ def deploy_pod():
     # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
     # Load all YAML documents from the file
-    with open("manifests/deployment.yaml", "r") as file:
+    with open("new_manifests/deploy.yaml", "r") as file:
         deployment_manifests = yaml.load_all(file, Loader=yaml.SafeLoader)
 
         # Create Kubernetes API client
@@ -37,7 +37,7 @@ def deploy_external_service():
     # config.load_kube_config(config_file="/etc/rancher/k3s/k3s.yaml")
 
     # Load YAML file containing the service manifest
-    with open("manifests/service.yaml", "r") as file:
+    with open("new_manifests/service.yaml", "r") as file:
         service_manifest = yaml.safe_load(file)
 
     # Create Kubernetes API client
