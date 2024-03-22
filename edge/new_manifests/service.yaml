@@ -1,0 +1,19 @@
+apiVersion: v1 
+kind: Service
+metadata:
+  name: test-service 
+spec:
+  selector:
+    app: test
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30234
+    - name: socket
+      port: 5001
+      targetPort: 5001
+      nodePort: 30235
+    
