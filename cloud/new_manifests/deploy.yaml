@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: test
-        image: ismailshojeeb/server:v2
+        image: ismailshojeeb/server:v3
         ports:
         - containerPort: 5000
         - containerPort: 5001
