@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge
+spec:
+  selector:
+    matchLabels:
+      app: edge
+  template:
+    metadata:
+      labels:
+        app: edge
+    spec:
+      containers:
+      - name: edge
+        image: ismailshojeeb/edge:v1
+        ports:
+        - containerPort: 5001
