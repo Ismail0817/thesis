@@ -9,7 +9,7 @@ host = 'localhost'
 port = 5001
 
 # API endpoint URL
-api_url = 'http://localhost:5002/api'
+api_url = 'http://192.168.10.243:5002/api'
 
 try:
     # Bind the socket to the host and port
