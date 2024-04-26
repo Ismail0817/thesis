@@ -13,6 +13,6 @@ spec:
     spec:
       containers:
       - name: edge
-        image: ismailshojeeb/edge:v1
+        image: ismailshojeeb/edge:v4
         ports:
         - containerPort: 5001
