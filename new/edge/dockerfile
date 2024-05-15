@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5001
 
 # Run the Python script when the container launches
-CMD ["python", "edge.py"]
+CMD ["python", "mqtt_sub_new.py"]
