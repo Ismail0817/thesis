@@ -18,16 +18,16 @@ def handle_api_request():
     request_data = request.get_json()
 
     # Extract the request type from the request data
-    request_type = request_data.get('type')
-    print(request_type)
+    task_type = request_data.get('message')
+    print(task_type)
 
-    if request_type == 'task1':
+    if task_type == 'task1':
         # Perform task 1
-        result = perform_task1()
-    elif request_type == 'task2':
+        result = perform_task1(request_data)
+    elif task_type == 'task2':
         # Perform task 2
         result = perform_task2(request_data)
-    elif request_type == 'task3':
+    elif task_type == 'task3':
         # Perform task 3
         result = perform_task3(request_data)
     else:
@@ -36,15 +36,16 @@ def handle_api_request():
 
     return result
 
-def perform_task1():
+def perform_task1(request_data):
     # Logic for task 1
     # ...
     result = negotiate_edge()
     print(result)
+    print(request_data.get('message'))
     if result == "success":
         # return {'result': 'Task 1 completed'}
-        deploy_pod("task1")
-        deploy_service("task1")
+        deploy_pod(request_data.get('message'))
+        deploy_service(request_data.get('message'))
         return {'result': 'Task 1 deployed successfully wait for result'}
     else:
         return {'result': 'Task 1 failed because of edge negotiation failure'}
