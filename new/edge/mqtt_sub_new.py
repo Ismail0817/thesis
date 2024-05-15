@@ -59,7 +59,7 @@ try:
         if elapsed_time >= 10:
             print("Sum of numbers received in the last 10 seconds:", sum_of_numbers)
             # Send the total to the API endpoint
-            response = requests.post('http://localhost:5000/container_api', json={'message': sum_of_numbers, 'task': 'task2'})
+            response = requests.post('http://192.168.10.145:5000/container_api', json={'message': sum_of_numbers, 'task': 'task2'})
             if response.status_code == 200:
                 print('Total sent to API successfully!', flush=True)
             else:

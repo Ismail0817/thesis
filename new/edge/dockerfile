@@ -1,5 +1,5 @@
-# Use the official Python runtime as a parent image
-FROM python:3.8-slim-buster
+# Use the official Python image as a base image
+FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,10 +7,9 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install paho-mqtt requests
 
-EXPOSE 5001
 
 # Run the Python script when the container launches
 CMD ["python", "mqtt_sub_new.py"]
