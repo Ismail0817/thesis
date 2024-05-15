@@ -2,16 +2,18 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/container_api', methods=['GET'])
+@app.route('/container_api', methods=['POST'])
 def handle_container_api_request():
     # Logic for handling another API request
     # ...
     request_data = request.get_json()
 
     # Extract the request type from the request data
-    request = request_data.get('message')
-    print(request)
-    return {'result': 'Another API endpoint called'}
+    res = request_data.get('message')
+    task = request_data.get('task')
+    print(res)
+    print(task)
+    return {'result': 'Data received in middleware API'}
 
 @app.route('/api', methods=['POST'])
 def handle_api_request():
