@@ -47,11 +47,9 @@ mqtt_client.loop_start()
 
 # Main loop
 try:
-    while True:
-        time.sleep(15)  # Wait for 15 seconds
-        send_data_to_api()
-        received_data = []  # Clear the received data after sending
-        break
+    time.sleep(15)  # Wait for 15 seconds
+    send_data_to_api()
+    received_data = []  # Clear the received data after sending
 except KeyboardInterrupt:
     mqtt_client.disconnect()
     mqtt_client.loop_stop()
