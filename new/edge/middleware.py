@@ -1,4 +1,6 @@
+import subprocess
 from flask import Flask, request
+
 
 app = Flask(__name__)
 
@@ -71,7 +73,53 @@ def perform_task3(request_data):
     return {'result': 'Task 3 completed'}
 
 def negotiate_edge():
-    return "success"
+    script_path = "/root/thesis/new/edge/bash.sh" 
+    script_output = run_shell_script(script_path)
+    
+    # Split the string into lines
+    lines = script_output.strip().split('\n')
+
+    # Extract headers
+    headers = lines[0].split()
+
+    # Initialize dictionaries to store data for each node
+    node_data = {}
+
+    # Process data for each line
+    for line in lines[1:]:
+        # Split line into fields
+        fields = line.split()
+        node_name = fields[0]
+        node_values = {
+            headers[i]: fields[i] for i in range(1, len(headers))
+        }
+        node_data[node_name] = node_values
+    
+    negotiation = "unsuccess"
+    for node_name, values in node_data.items():
+        if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 50:
+            print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
+            negotiation = "success"
+        else:
+            print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
+
+    # # negotiation with fog
+    # response_from_fog = send_api_request_fog('http://192.168.10.147:5000/api', "negotiate")
+    # print(response_from_fog)
+    # return jsonify({'reply': negotiation, 'data': node_data})
+    return negotiation
+
+def run_shell_script(script_path):
+    try:
+        # Run the shell script using subprocess and capture output
+        completed_process = subprocess.run(['bash', script_path], capture_output=True, text=True, check=True)
+        # Access the captured output from completed_process.stdout
+        script_output = completed_process.stdout
+        # Return the captured output
+        return script_output
+    except subprocess.CalledProcessError as e:
+        print(f"Error running shell script: {e}")
+        return None
 
 def deploy_pod(task):
     if task == "task1":
