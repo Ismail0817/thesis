@@ -131,22 +131,16 @@ def deploy_pod(task):
         # Create Kubernetes API client
         apps_v1 = client.AppsV1Api()
 
-        # Load all YAML documents from the file
-        with open("manifests/deployment.yaml", "r") as file:
-            deployment_manifests = yaml.load_all(file, Loader=yaml.SafeLoader)
-
-            # Create Kubernetes API client
-            # apps_v1 = client.AppsV1Api()
-
-            # Create the Deployments
-            for deployment_manifest in deployment_manifests:
-                try:
-                    apps_v1.create_namespaced_deployment(
-                        body=deployment_manifest, namespace="default"
-                    )
-                    print("Deployment created successfully!")
-                except Exception as e:
-                    print(f"Error creating Deployment: {e}")
+        with open("new_manifests/service.yaml", "r") as file:
+            deployment_manifest = yaml.safe_load(file)
+            try:
+                # Create the Service
+                apps_v1.create_namespaced_deployment(
+                    body=deployment_manifest, namespace="default"
+                )
+                print("Deployment created successfully!")
+            except Exception as e:
+                print(f"Error creating Deployment: {e}")
 
                 print("pod deployed")
 
