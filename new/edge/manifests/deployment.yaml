@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app: edge
+      name: edge
     spec:
       containers:
       - name: edge
