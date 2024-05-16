@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: edge
-        image: ismailshojeeb/edge:v6
+        image: ismailshojeeb/edge:v7
