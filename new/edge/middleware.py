@@ -131,7 +131,7 @@ def deploy_pod(task):
         # Create Kubernetes API client
         apps_v1 = client.AppsV1Api()
 
-        with open("new_manifests/service.yaml", "r") as file:
+        with open("manifests/deployment.yaml", "r") as file:
             deployment_manifest = yaml.safe_load(file)
             try:
                 # Create the Service
