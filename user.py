@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/api', methods=['POST'])
 def receive_message():
-    message = request.get_json().get('message')
+    message = request.get_json().get('result')
     print(message)
     return 'Message received'
 
