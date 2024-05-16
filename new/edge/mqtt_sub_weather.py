@@ -9,7 +9,7 @@ mqtt_port = 1883
 mqtt_topic = "test/weather"
 
 # API Endpoint
-api_endpoint = "http://192.168.10.243:5003/api"
+api_endpoint = "http://192.168.10.145:5000/container_api"
 
 # Global variable to store received data
 received_data = []
