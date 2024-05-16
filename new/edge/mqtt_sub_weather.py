@@ -18,7 +18,12 @@ received_data = []
 def on_message(client, userdata, message):
     global received_data
     payload = json.loads(message.payload.decode("utf-8"))
-    received_data.append(payload)
+    
+    # Check for NaN values
+    if "NaN" not in payload.values():
+        received_data.append(payload)
+    else:
+        print("Received message contains NaN value, discarding...")
 
 # Function to send data to API endpoint
 def send_data_to_api():
@@ -46,6 +51,7 @@ try:
         time.sleep(15)  # Wait for 15 seconds
         send_data_to_api()
         received_data = []  # Clear the received data after sending
+        break
 except KeyboardInterrupt:
     mqtt_client.disconnect()
     mqtt_client.loop_stop()
