@@ -22,10 +22,7 @@ def handle_container_api_request():
         response = requests.post('http://192.168.10.243:5003/api', json=request_data)
         print(response.text)
     elif task_type == 'task2':
-        payload = {'message': request_data.get('message'), 'task': 'task2'}
-        response = requests.post('http://192.168.10.147:5003/api', json=payload)
-        print(response.text)
-        # print("task2")
+        print("task2")
     return {'result': 'Data received in middleware API'}
 
 @app.route('/api', methods=['POST'])
@@ -33,29 +30,31 @@ def handle_api_request():
     request_data = request.get_json()
     global task_type
     # Extract the request type from the request data
-    task_type = request_data.get('message')
-    # print(task_type)
+    task_type = request_data.get('task')
+    print(task_type)
+    print(request_data.get('message'))
 
-    if task_type == 'task1' or task_type == 'task2' or task_type == 'task3':
-        # Perform task 1
-        result = perform_task1(request_data)
-    else:
-        # Invalid request type
-        result = {'error': 'Invalid request type'}
+    # if task_type == 'task2' or task_type == 'task3':
+    #     # Perform task 2
+    #     result = perform_task2(request_data)
+    # else:
+    #     # Invalid request type
+    #     result = {'error': 'Invalid request type'}
 
-    return result
+    # return result
+    return {'result': 'data received in fog middleware API'}
 
-def perform_task1(request_data):
+def perform_task2(request_data):
     # Logic for task 1
     # ...
     result = negotiate_edge()
     # print(result)
     print(request_data.get('message'))
     if result == "success":
-        # return {'result': 'Task 1 completed'}
-        deploy_pod()
+        return {'result': 'Task 2 completed'}
+        # deploy_pod()
         # deploy_service(request_data.get('message'))
-        return {'result': 'Task 1 deployed successfully wait for result'}
+        # return {'result': 'Task 2 deployed successfully wait for result'}
     else:
         return {'result': 'Task 1 failed because of edge negotiation failure'}
 
