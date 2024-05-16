@@ -1,5 +1,7 @@
 import subprocess
 from flask import Flask, request
+import yaml
+from kubernetes import client, config
 
 
 app = Flask(__name__)
@@ -23,7 +25,7 @@ def handle_api_request():
 
     # Extract the request type from the request data
     task_type = request_data.get('message')
-    print(task_type)
+    # print(task_type)
 
     if task_type == 'task1':
         # Perform task 1
@@ -44,12 +46,12 @@ def perform_task1(request_data):
     # Logic for task 1
     # ...
     result = negotiate_edge()
-    print(result)
+    # print(result)
     print(request_data.get('message'))
     if result == "success":
         # return {'result': 'Task 1 completed'}
         deploy_pod(request_data.get('message'))
-        deploy_service(request_data.get('message'))
+        # deploy_service(request_data.get('message'))
         return {'result': 'Task 1 deployed successfully wait for result'}
     else:
         return {'result': 'Task 1 failed because of edge negotiation failure'}
@@ -123,7 +125,31 @@ def run_shell_script(script_path):
 
 def deploy_pod(task):
     if task == "task1":
-        print("pod deployed")
+        # Load kubeconfig file to authenticate with the Kubernetes cluster
+        config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+
+        # Create Kubernetes API client
+        apps_v1 = client.AppsV1Api()
+
+        # Load all YAML documents from the file
+        with open("manifests/deployment.yaml", "r") as file:
+            deployment_manifests = yaml.load_all(file, Loader=yaml.SafeLoader)
+
+            # Create Kubernetes API client
+            # apps_v1 = client.AppsV1Api()
+
+            # Create the Deployments
+            for deployment_manifest in deployment_manifests:
+                try:
+                    apps_v1.create_namespaced_deployment(
+                        body=deployment_manifest, namespace="default"
+                    )
+                    print("Deployment created successfully!")
+                except Exception as e:
+                    print(f"Error creating Deployment: {e}")
+
+                print("pod deployed")
+
     elif task == "task2":
         print("pod deployed")
     elif task == "task3":
