@@ -1,5 +1,6 @@
 import subprocess
 from flask import Flask, request
+import requests
 import yaml
 from kubernetes import client, config
 
@@ -17,6 +18,12 @@ def handle_container_api_request():
     task = request_data.get('task')
     print(res)
     print(task)
+    if task == 'task1':
+        response = requests.post('http://192.168.10.243:5003/api', json={'result': res, 'task': 'task1'})
+        print(response.json())
+    elif task == 'task2':
+        print(res)
+        print(task)
     return {'result': 'Data received in middleware API'}
 
 @app.route('/api', methods=['POST'])
@@ -146,7 +153,7 @@ def deploy_pod(task):
             except Exception as e:
                 print(f"Error creating Deployment: {e}")
 
-                print("pod deployed")
+                # print("pod deployed")
 
     elif task == "task2":
         print("pod deployed")
