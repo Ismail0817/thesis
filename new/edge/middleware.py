@@ -18,10 +18,10 @@ def handle_container_api_request():
     task = request_data.get('task')
     print(res)
     print(task)
-    if task == 'task1':
+    if task_type == 'task1':
         response = requests.post('http://192.168.10.243:5003/api', json={'result': res, 'task': 'task1'})
         print(response.json())
-    elif task == 'task2':
+    elif task_type == 'task2':
         print(res)
         print(task)
     return {'result': 'Data received in middleware API'}
@@ -29,7 +29,7 @@ def handle_container_api_request():
 @app.route('/api', methods=['POST'])
 def handle_api_request():
     request_data = request.get_json()
-
+    global task_type
     # Extract the request type from the request data
     task_type = request_data.get('message')
     # print(task_type)
