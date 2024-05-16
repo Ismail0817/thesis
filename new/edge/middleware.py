@@ -134,7 +134,10 @@ def deploy_pod(task):
         with open("manifests/deployment.yaml", "r") as file:
             deployment_manifest = yaml.safe_load(file)
             try:
-                # Create the Service
+                # Set the desired name for the deployment
+                deployment_manifest['metadata']['name'] = "edge"
+                
+                # Create the deployment in the "default" namespace
                 apps_v1.create_namespaced_deployment(
                     body=deployment_manifest, namespace="default"
                 )
