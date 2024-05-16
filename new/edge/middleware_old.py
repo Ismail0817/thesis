@@ -33,8 +33,14 @@ def handle_api_request():
     task_type = request_data.get('message')
     # print(task_type)
 
-    if task_type == 'task1' or task_type == 'task2' or task_type == 'task3':
+    if task_type == 'task1':
         # Perform task 1
+        result = perform_task1(request_data)
+    elif task_type == 'task2':
+        # Perform task 2
+        result = perform_task1(request_data)
+    elif task_type == 'task3':
+        # Perform task 3
         result = perform_task1(request_data)
     else:
         # Invalid request type
@@ -50,12 +56,29 @@ def perform_task1(request_data):
     print(request_data.get('message'))
     if result == "success":
         # return {'result': 'Task 1 completed'}
-        deploy_pod()
+        deploy_pod(request_data.get('message'))
         # deploy_service(request_data.get('message'))
         return {'result': 'Task 1 deployed successfully wait for result'}
     else:
         return {'result': 'Task 1 failed because of edge negotiation failure'}
 
+# def perform_task2(request_data):
+#     # Logic for task 2
+#     # ...
+#     result = negotiate_edge()
+#     print(result)
+#     if result == "success":
+#         deploy_pod("task2")
+#         deploy_service("task2")
+#         return {'result': 'Task 2 deployed successfully in edge.  Wait for result from edge and fog.'}
+#     else:
+#         return {'result': 'Task 2 failed because of edge negotiation failure'}
+
+# def perform_task3(request_data):
+#     # Logic for task 3
+#     # ...
+
+#     return {'result': 'Task 3 completed'}
 
 def negotiate_edge():
     script_path = "/root/thesis/new/edge/bash.sh" 
@@ -106,30 +129,35 @@ def run_shell_script(script_path):
         print(f"Error running shell script: {e}")
         return None
 
-def deploy_pod():
-    
-    # Load kubeconfig file to authenticate with the Kubernetes cluster
-    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+def deploy_pod(task):
+    if task == "task1":
+        # Load kubeconfig file to authenticate with the Kubernetes cluster
+        config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
-    # Create Kubernetes API client
-    apps_v1 = client.AppsV1Api()
+        # Create Kubernetes API client
+        apps_v1 = client.AppsV1Api()
 
-    with open("manifests/deployment.yaml", "r") as file:
-        deployment_manifest = yaml.safe_load(file)
-        try:
-            # # Set the desired name for the deployment and pod
-            # deployment_manifest['metadata']['name'] = "edge-deployment"
-            # deployment_manifest['spec']['template']['metadata']['name'] = "edge-pod"
-            
-            # Create the deployment in the "default" namespace
-            apps_v1.create_namespaced_deployment(
-                body=deployment_manifest, namespace="default"
-            )
-            print("Deployment created successfully!")
-        except Exception as e:
-            print(f"Error creating Deployment: {e}")
+        with open("manifests/deployment.yaml", "r") as file:
+            deployment_manifest = yaml.safe_load(file)
+            try:
+                # # Set the desired name for the deployment and pod
+                # deployment_manifest['metadata']['name'] = "edge-deployment"
+                # deployment_manifest['spec']['template']['metadata']['name'] = "edge-pod"
+                
+                # Create the deployment in the "default" namespace
+                apps_v1.create_namespaced_deployment(
+                    body=deployment_manifest, namespace="default"
+                )
+                print("Deployment created successfully!")
+            except Exception as e:
+                print(f"Error creating Deployment: {e}")
 
-            # print("pod deployed")
+                # print("pod deployed")
+
+    elif task == "task2":
+        print("pod deployed")
+    elif task == "task3":
+        print("pod deployed")
     
 def deploy_service(task):
     if task == "task1":
