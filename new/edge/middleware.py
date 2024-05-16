@@ -22,10 +22,10 @@ def handle_container_api_request():
         response = requests.post('http://192.168.10.243:5003/api', json=request_data)
         print(response.text)
     elif task_type == 'task2':
-        payload = {'message': "hello", 'task': 'task2'}
-        response = requests.post('http://192.168.10.147:5000/api', json=payload)
-        print(response.text)
-        # print("task2")
+        # payload = {'message': "hello", 'task': 'task2'}
+        # response = requests.post('http://192.168.10.147:5000/api', json=payload)
+        # print(response.text)
+        print("task2 is due")
     return {'result': 'Data received in middleware API'}
 
 @app.route('/api', methods=['POST'])
