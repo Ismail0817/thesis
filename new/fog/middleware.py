@@ -54,7 +54,8 @@ def perform_task2(message):
     # Send data to the API endpoint
     response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
     print(response.text)
-    response = requests.post('http://192.168.10.243:5003/api', json=response.text)
+    payload = {'message': response.text, 'task': 'task2'}
+    response = requests.post('http://192.168.10.243:5003/api', json=payload)
 
     # Print the response from the server
     print(response.json())
