@@ -1,3 +1,4 @@
+import json
 import subprocess
 import threading
 from flask import Flask, request
@@ -14,10 +15,20 @@ def handle_api_request():
     global task_type
     
     # Extract the request type from the request data
-    task_type = request_data.get('task')
+    # task_type = request_data.get('task')
     
-    print(request_data)
-    print(type(request_data))
+    message_json = request_data['message']
+    task = request_data['task']
+
+    # Parse the JSON string in the message
+    message = json.loads(message_json)
+
+    # Now `message` is a list of dictionaries and `task` is a string
+    print("Message:", message)
+    print("Task:", task)
+
+    # print(request_data)
+    # print(type(request_data))
     # print(request_data.get('message'))
 
     # if task_type == 'task2' or task_type == 'task3':
