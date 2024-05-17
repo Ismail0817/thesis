@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     libopenblas-dev \
     liblapack-dev \
+    python-dev \
+    libatlas-base-dev \
     && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get install python-dev libatlas-base-dev
 
 # Install any other needed dependencies specified in requirements.txt
 RUN pip install --no-cache-dir numpy flask pandas scikit-learn
