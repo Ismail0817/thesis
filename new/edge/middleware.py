@@ -117,19 +117,19 @@ def deploy_pod():
     # Load kubeconfig file to authenticate with the Kubernetes cluster
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
-    # Create Kubernetes API client
-    apps_v1 = client.AppsV1Api()
+    # Create Kubernetes API client for batch operations
+    batch_v1 = client.BatchV1Api()
 
-    with open("manifests/deployment.yaml", "r") as file:
-        deployment_manifest = yaml.safe_load(file)
+    with open("manifests/job.yaml", "r") as file:
+        job_manifest = yaml.safe_load(file)
         try:
             # # Set the desired name for the deployment and pod
             # deployment_manifest['metadata']['name'] = "edge-deployment"
             # deployment_manifest['spec']['template']['metadata']['name'] = "edge-pod"
             
-            # Create the deployment in the "default" namespace
-            apps_v1.create_namespaced_deployment(
-                body=deployment_manifest, namespace="default"
+            # Create the job in the "default" namespace
+            batch_v1.create_namespaced_job(
+                body=job_manifest, namespace="default"
             )
             print("Deployment created successfully!")
         except Exception as e:

@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: run-once-job
+  name: run-once-job-edge
 spec:
   template:
     spec:
       containers:
-      - name: run-once-container
+      - name: run-once-container-edge
         image: ismailshojeeb/edge:v8
         command: ["python", "mqtt_sub_weather.py"]
       restartPolicy: Never
