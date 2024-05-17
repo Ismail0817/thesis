@@ -5,6 +5,7 @@ from flask import Flask, request
 import requests
 import yaml
 from kubernetes import client, config
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -50,7 +51,10 @@ def perform_task2(message):
     # Logic for task 1
     # ...
     print("inside thread")
-    print("Message:", message)
+    # print("Message:", message)
+    # Convert message to a DataFrame
+    df = pd.DataFrame(message)
+    print(df)   
     # print(request_data.get('message'))
     
 
