@@ -10,13 +10,16 @@ RUN apt-get update && apt-get install -y \
     libatlas-base-dev \
     gcc \
     gfortran \
+    cmake \
     && apt-get clean
 
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install Python dependencies
+# Upgrade pip
 RUN pip install --upgrade pip
+
+# Install Python dependencies
 RUN pip install paho-mqtt requests pandas scikit-learn flask
 
 # Expose the port the app runs on
