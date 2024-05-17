@@ -17,6 +17,7 @@ def handle_api_request():
     task_type = request_data.get('task')
     
     print(request_data)
+    print(type(request_data))
     # print(request_data.get('message'))
 
     # if task_type == 'task2' or task_type == 'task3':
