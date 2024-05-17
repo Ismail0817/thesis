@@ -1,29 +1,17 @@
-# Use the official Python image as a base image
-FROM python:3.9-slim
+# Use the official lightweight Python image for ARM architecture
+FROM arm32v7/python:3.8-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libatlas-base-dev \
-    gcc \
-    gfortran \
-    cmake \
-    && apt-get clean
-
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Upgrade pip
-RUN pip install --upgrade pip
+# Install any needed dependencies specified in requirements.txt
+RUN pip install --no-cache-dir flask pandas scikit-learn
 
-# Install Python dependencies
-RUN pip install paho-mqtt requests pandas scikit-learn flask
-
-# Expose the port the app runs on
+# Make port 5005 available to the world outside this container
 EXPOSE 5005
 
-# Run the Python script when the container launches
-CMD ["python", "fog.py"]
+# Run app.py when the container launches
+CMD ["python", "app.py"]
