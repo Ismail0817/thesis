@@ -47,12 +47,15 @@ def handle_api_request():
     # return {'result': 'data received in fog middleware API'}
 
 def perform_task2(message):
-    # Logic for task 1
+    # Logic for task 2
     # ...
-    print("inside thread")
-    print("Message:", message)
-    # Convert message to a DataFrame
-     
+    print("inside thread\n sending data to fog container\n")
+    # print("Message:", message)
+    # Send data to the API endpoint
+    response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
+
+    # Print the response from the server
+    print(response.json())
     # print(request_data.get('message'))
     
 
