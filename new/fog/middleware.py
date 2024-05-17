@@ -24,32 +24,33 @@ def handle_api_request():
     message = json.loads(message_json)
 
     # Now `message` is a list of dictionaries and `task` is a string
-    print("Message:", message)
+    # print("Message:", message)
     print("Task:", task)
 
     # print(request_data)
     # print(type(request_data))
     # print(request_data.get('message'))
 
-    # if task_type == 'task2' or task_type == 'task3':
-    #     # Perform task 2
-    #     result = negotiate_fog()
-    #     print(result)   
-    #     if result == "success":
-    #         threading.Thread(target=perform_task2, args=(request_data,)).start()
-    #         return {'result': 'Task 2 deployed successfully wait for result'}
-    #     else:
-    #         return {'result': 'Task 2 failed because of fog negotiation failure'}
-    # else:
-    #     # Invalid request type
-    #     return {'error': 'Invalid request type'}
+    if task == 'task2' or task == 'task3':
+        # Perform task 2
+        result = negotiate_fog()
+        print(result)   
+        if result == "success":
+            threading.Thread(target=perform_task2, args=(message,)).start()
+            return {'result': 'Task 2 deployed successfully wait for result'}
+        else:
+            return {'result': 'Task 2 failed because of fog negotiation failure'}
+    else:
+        # Invalid request type
+        return {'error': 'Invalid request type'}
 
-    return {'result': 'data received in fog middleware API'}
+    # return {'result': 'data received in fog middleware API'}
 
-def perform_task2(request_data):
+def perform_task2(message):
     # Logic for task 1
     # ...
     print("inside thread")
+    print("Message:", message)
     # print(request_data.get('message'))
     
 
