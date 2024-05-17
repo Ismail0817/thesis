@@ -58,7 +58,7 @@ def perform_task2(message):
     response = requests.post('http://192.168.10.243:5003/api', json=payload)
 
     # Print the response from the server
-    print(response.json())
+    print(response.text)
     # print(request_data.get('message'))
     
 
