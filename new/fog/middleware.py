@@ -16,23 +16,23 @@ def handle_api_request():
     # Extract the request type from the request data
     task_type = request_data.get('task')
     
-    # print(task_type)
+    print(request_data)
     # print(request_data.get('message'))
 
-    if task_type == 'task2' or task_type == 'task3':
-        # Perform task 2
-        result = negotiate_fog()
-        print(result)   
-        if result == "success":
-            threading.Thread(target=perform_task2, args=(request_data,)).start()
-            return {'result': 'Task 2 deployed successfully wait for result'}
-        else:
-            return {'result': 'Task 2 failed because of fog negotiation failure'}
-    else:
-        # Invalid request type
-        return {'error': 'Invalid request type'}
+    # if task_type == 'task2' or task_type == 'task3':
+    #     # Perform task 2
+    #     result = negotiate_fog()
+    #     print(result)   
+    #     if result == "success":
+    #         threading.Thread(target=perform_task2, args=(request_data,)).start()
+    #         return {'result': 'Task 2 deployed successfully wait for result'}
+    #     else:
+    #         return {'result': 'Task 2 failed because of fog negotiation failure'}
+    # else:
+    #     # Invalid request type
+    #     return {'error': 'Invalid request type'}
 
-    # return {'result': 'data received in fog middleware API'}
+    return {'result': 'data received in fog middleware API'}
 
 def perform_task2(request_data):
     # Logic for task 1
