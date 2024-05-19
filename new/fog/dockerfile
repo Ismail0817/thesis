@@ -1,5 +1,5 @@
-# Use the official Raspberry Pi-compatible Python image as a base image
-FROM python:3.6-alpine3.7
+# Use the official Python image as a base image
+FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,26 +7,9 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install necessary system packages and a newer version of CMake
-RUN apk add --no-cache --update \
-    python3 python3-dev gcc \
-    gfortran musl-dev g++ \
-    libffi-dev openssl-dev \
-    libxml2 libxml2-dev \
-    libxslt libxslt-dev \
-    libjpeg-turbo-dev zlib-dev
+# Install dependencies
+RUN pip install flask pandas scikit-learn
 
-# Upgrade Cython to the latest version
-RUN pip install --upgrade cython
-
-# Upgrade pip to the latest version
-RUN pip install --upgrade pip
-
-# Install Python dependencies
-RUN pip install requests numpy==1.17.1 flask pandas scikit-learn
-
-# Make port 5005 available to the world outside this container
-EXPOSE 5005
 
 # Run the Python script when the container launches
 CMD ["python", "fog.py"]
