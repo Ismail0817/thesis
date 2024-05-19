@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: run-once-container-edge
-        image: ismailshojeeb/edge:v8
+        image: ismailshojeeb/edge:v9
         command: ["python", "mqtt_sub_weather.py"]
       restartPolicy: Never
   backoffLimit: 0
