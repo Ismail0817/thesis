@@ -2,7 +2,7 @@ from kubernetes import client, config
 
 def get_service_status(namespace, service_name):
     # Load the kubeconfig file (ensure this is set up correctly to access your cluster)
-    config.load_kube_config()
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
     # Create an instance of the CoreV1Api
     v1 = client.CoreV1Api()
