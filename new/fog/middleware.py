@@ -53,14 +53,14 @@ def perform_task2(message):
     print("Message:", message)
     deploy_pod()
     deploy_service()
-    # # Send data to the API endpoint
-    # response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
-    # print(response.text)
-    # payload = {'message': response.text, 'task': 'task2'}
-    # response = requests.post('http://192.168.10.243:5003/api', json=payload)
+    # Send data to the API endpoint
+    response = requests.post("http://192.168.10.146:30234/preprocess", json=message)
+    print(response.text)
+    payload = {'message': response.text, 'task': 'task2'}
+    response = requests.post('http://192.168.10.148:5003/api', json=payload)
 
-    # # Print the response from the server
-    # print(response.text)
+    # Print the response from the server
+    print(response.text)
     # # print(request_data.get('message'))
     
 
