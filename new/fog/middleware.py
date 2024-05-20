@@ -54,7 +54,7 @@ def perform_task2(message):
     deploy_pod()
     deploy_service()
     # Send data to the API endpoint
-    response = requests.post("http://192.168.10.146:30234/preprocess", json=message)
+    response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
     payload = {'message': response.text, 'task': 'task2'}
     response = requests.post('http://192.168.10.148:5003/api', json=payload)
