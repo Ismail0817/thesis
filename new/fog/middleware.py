@@ -82,7 +82,7 @@ def perform_task2(message):
             print(f"Service '{service_name}' in namespace '{namespace}' status:")
             print(f"Type: {service.spec.type}")
             print(f"Cluster IP: {service.spec.cluster_ip}")
-            print(f"External IPs: {service.status.load_balancer.ingress[0].ip if service.status.load_balancer else 'None'}")
+            print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
             print(f"Ports: {service.spec.ports}")
 
             if status == "Running":
