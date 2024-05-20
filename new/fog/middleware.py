@@ -61,39 +61,59 @@ def perform_task2(message):
     v1 = client.CoreV1Api()
     namespace='default'
     service_name='fog-service'
+    deployment_name='fog'
     while True:
         try:
-            # List all pods in the specified namespace
-            pod_list = v1.list_namespaced_pod(namespace)
-            for pod in pod_list.items:
-                name = pod.metadata.name
-                status = pod.status.phase
-                print(f"Pod Name: {name}, Status: {status}")
-            if name.startswith("fog"):
-                print("The value starts with 'fog'.")
-            else:
-                print("The value does not start with 'fog'.")
-            # if status == "Running":
-            #     print("Pod is running")
-            #     break
+            deployment = v1.read_namespaced_deployment(deployment_name, namespace)
+            if deployment.status.available_replicas == deployment.spec.replicas:
+                print("Deployment is ready")
+                break
+        except Exception as e:
+            print(f"Error checking deployment: {e}")
+        # time.sleep(1)
+    while True:
+        try:
+            service = v1.read_namespaced_service(service_name, namespace)
+            if service.status.load_balancer.ingress:
+                print("Service is ready")
+                break
+        except Exception as e:
+            print(f"Error checking service: {e}")
+        # time.sleep(1)
 
-            service = v1.read_namespaced_service(name=service_name, namespace=namespace)
-            # Print the service status
-            print(f"Service '{service_name}' in namespace '{namespace}' status:")
-            print(f"Type: {service.spec.type}")
-            print(f"Cluster IP: {service.spec.cluster_ip}")
-            print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
-            print(f"Ports: {service.spec.ports}")
+    # while True:
+    #     try:
+    #         # List all pods in the specified namespace
+    #         pod_list = v1.list_namespaced_pod(namespace)
+    #         for pod in pod_list.items:
+    #             name = pod.metadata.name
+    #             status = pod.status.phase
+    #             print(f"Pod Name: {name}, Status: {status}")
+    #         if name.startswith("fog"):
+    #             print("The value starts with 'fog'.")
+    #         else:
+    #             print("The value does not start with 'fog'.")
+    #         # if status == "Running":
+    #         #     print("Pod is running")
+    #         #     break
 
-            if status == "Running":
-                if service.status.load_balancer.ingress:
-                    print("Pod is running")
-                    break
+    #         service = v1.read_namespaced_service(name=service_name, namespace=namespace)
+    #         # Print the service status
+    #         print(f"Service '{service_name}' in namespace '{namespace}' status:")
+    #         print(f"Type: {service.spec.type}")
+    #         print(f"Cluster IP: {service.spec.cluster_ip}")
+    #         print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
+    #         print(f"Ports: {service.spec.ports}")
 
-        except ApiException as e:
-            print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
+    #         if status == "Running":
+    #             if service.status.load_balancer.ingress:
+    #                 print("Pod is running")
+    #                 break
+
+    #     except ApiException as e:
+    #         print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
         
-    time.sleep(5)
+    # time.sleep(5)
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
