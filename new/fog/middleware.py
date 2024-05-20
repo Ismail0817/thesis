@@ -52,7 +52,7 @@ def perform_task2(message,task_type):
     # Logic for task 2
     # ...
     print("inside thread\n sending data to fog container\n")
-    print("Message:", task_type)
+    # print("Message:", task_type)
     deploy_pod()
     deploy_service()
     
@@ -87,12 +87,15 @@ def perform_task2(message,task_type):
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
-    payload = {'message': response.text, 'task': 'task2'}
-    response = requests.post('http://192.168.10.148:5003/api', json=payload)
 
-    # Print the response from the server
-    print(response.text)
-    # # print(request_data.get('message'))
+    if task_type == 'task2':
+        payload = {'message': response.text, 'task': 'task2'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        # Print the response from the server
+        print(response.text)
+    elif task_type == 'task3':
+        # payload = {'message': response.text, 'task': 'task3'}
+        print("task 3 is due")
     
 
 def negotiate_fog():
