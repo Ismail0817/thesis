@@ -1,6 +1,7 @@
 import json
 import subprocess
 import threading
+import time
 from flask import Flask, request
 import requests
 import yaml
@@ -79,7 +80,7 @@ def perform_task2(message):
         except ApiException as e:
             print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
         
-
+    time.sleep(1)
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
