@@ -93,7 +93,7 @@ def perform_task2(message):
         except ApiException as e:
             print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
         
-    time.sleep(1)
+    time.sleep(5)
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
