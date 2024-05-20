@@ -51,6 +51,7 @@ def perform_task2(message):
     # ...
     print("inside thread\n sending data to fog container\n")
     print("Message:", message)
+    deploy_pod(message)
     # # Send data to the API endpoint
     # response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
     # print(response.text)
@@ -111,6 +112,29 @@ def run_shell_script(script_path):
         print(f"Error running shell script: {e}")
         return None
 
+def deploy_pod(message):
+    # Load kubeconfig file to authenticate with the Kubernetes cluster
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+
+    # Create Kubernetes API client
+    apps_v1 = client.AppsV1Api()
+
+    with open("manifests/deployment.yaml", "r") as file:
+        deployment_manifest = yaml.safe_load(file)
+        try:
+            # # Set the desired name for the deployment and pod
+            # deployment_manifest['metadata']['name'] = "edge-deployment"
+            # deployment_manifest['spec']['template']['metadata']['name'] = "edge-pod"
+            
+            # Create the deployment in the "default" namespace
+            apps_v1.create_namespaced_deployment(
+                body=deployment_manifest, namespace="default"
+            )
+            print("Deployment created successfully!")
+        except Exception as e:
+            print(f"Error creating Deployment: {e}")
+
+            # print("pod deployed")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
