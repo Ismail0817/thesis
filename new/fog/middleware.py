@@ -60,7 +60,7 @@ def perform_task2(message):
     # Create an instance of the API class
     v1 = client.CoreV1Api()
     namespace='default'
-
+    service_name='fog-service'
     while True:
         try:
             # List all pods in the specified namespace
@@ -76,6 +76,14 @@ def perform_task2(message):
             if status == "Running":
                 print("Pod is running")
                 break
+
+            service = v1.read_namespaced_service(name=service_name, namespace=namespace)
+            # Print the service status
+            print(f"Service '{service_name}' in namespace '{namespace}' status:")
+            print(f"Type: {service.spec.type}")
+            print(f"Cluster IP: {service.spec.cluster_ip}")
+            print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
+            print(f"Ports: {service.spec.ports}")
 
         except ApiException as e:
             print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
