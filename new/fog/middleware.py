@@ -50,16 +50,16 @@ def perform_task2(message):
     # Logic for task 2
     # ...
     print("inside thread\n sending data to fog container\n")
-    # print("Message:", message)
-    # Send data to the API endpoint
-    response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
-    print(response.text)
-    payload = {'message': response.text, 'task': 'task2'}
-    response = requests.post('http://192.168.10.243:5003/api', json=payload)
+    print("Message:", message)
+    # # Send data to the API endpoint
+    # response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
+    # print(response.text)
+    # payload = {'message': response.text, 'task': 'task2'}
+    # response = requests.post('http://192.168.10.243:5003/api', json=payload)
 
-    # Print the response from the server
-    print(response.text)
-    # print(request_data.get('message'))
+    # # Print the response from the server
+    # print(response.text)
+    # # print(request_data.get('message'))
     
 
 def negotiate_fog():
