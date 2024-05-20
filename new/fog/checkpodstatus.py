@@ -15,6 +15,7 @@ def check_pod_status(namespace='default'):
             name = pod.metadata.name
             status = pod.status.phase
             print(f"Pod Name: {name}, Status: {status}")
+        print (name)
 
     except ApiException as e:
         print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
