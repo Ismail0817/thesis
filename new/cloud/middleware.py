@@ -83,7 +83,7 @@ def perform_task3(message,task_type):
         
     time.sleep(3)
     # Send data to the pod API endpoint
-    response = requests.post("http://192.168.1.147:30234/preprocess", json=message)
+    response = requests.post("http://192.168.1.147:30234/predict", json=message)
     print(response.text)
 
     payload = {'message': response.text, 'task': 'task3'}
