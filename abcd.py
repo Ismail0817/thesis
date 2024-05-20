@@ -19,7 +19,7 @@ data = [
 ]
 
 # Send data to the API endpoint
-response = requests.post("http://192.168.1.147:30234/preprocess", json=data)
+response = requests.post("http://192.168.1.146:30234/preprocess", json=data)
 
 # Print the response from the server
 print(response.json())
