@@ -51,7 +51,8 @@ def perform_task2(message):
     # ...
     print("inside thread\n sending data to fog container\n")
     print("Message:", message)
-    deploy_pod(message)
+    deploy_pod()
+    deploy_service()
     # # Send data to the API endpoint
     # response = requests.post("http://192.168.10.243:5005/preprocess", json=message)
     # print(response.text)
@@ -112,7 +113,7 @@ def run_shell_script(script_path):
         print(f"Error running shell script: {e}")
         return None
 
-def deploy_pod(message):
+def deploy_pod():
     # Load kubeconfig file to authenticate with the Kubernetes cluster
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
@@ -135,6 +136,26 @@ def deploy_pod(message):
             print(f"Error creating Deployment: {e}")
 
             # print("pod deployed")
+
+def deploy_service():
+    # Load kubeconfig file to authenticate with the Kubernetes cluster
+    config.load_kube_config(config_file="/etc/rancher/k3s/k3s.yaml")
+
+    # Load YAML file containing the service manifest
+    with open("manifests/service.yaml", "r") as file:
+        service_manifest = yaml.safe_load(file)
+
+    # Create Kubernetes API client
+    core_v1 = client.CoreV1Api()
+
+    try:
+        # Create the Service
+        core_v1.create_namespaced_service(
+            body=service_manifest, namespace="default"
+        )
+        print("Service created successfully!")
+    except Exception as e:
+        print(f"Error creating Service: {e}")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
