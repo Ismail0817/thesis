@@ -2,7 +2,7 @@ from kubernetes import client, config
 import time
 
 def check_deployment_ready(deployment_name, namespace='default'):
-    config.load_kube_config()
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
     api_instance = client.AppsV1Api()
     while True:
         try:
@@ -14,7 +14,7 @@ def check_deployment_ready(deployment_name, namespace='default'):
         time.sleep(1)
 
 def check_service_ready(service_name, namespace='default'):
-    config.load_kube_config()
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
     api_instance = client.CoreV1Api()
     while True:
         try:
