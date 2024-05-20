@@ -86,7 +86,7 @@ def perform_task2(message):
             # print(f"Ports: {service.spec.ports}")
 
             if status == "Running":
-                if service.status.load_balancer:
+                if service.status.load_balancer.ingress:
                     print("Pod is running")
                     break
 
