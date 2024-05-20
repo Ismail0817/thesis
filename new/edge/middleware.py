@@ -64,7 +64,7 @@ def perform_task1(request_data):
 
 
 def negotiate_edge():
-    script_path = "/root/thesis/new/edge/bash.sh" 
+    script_path = "/home/admin/github/thesis/new/edge/bash.sh" 
     script_output = run_shell_script(script_path)
     
     # Split the string into lines

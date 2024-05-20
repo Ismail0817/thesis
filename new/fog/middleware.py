@@ -63,7 +63,7 @@ def perform_task2(message):
     
 
 def negotiate_fog():
-    script_path = "/root/thesis/new/edge/bash.sh" 
+    script_path = "/home/admin/github/thesis/new/edge/bash.sh" 
     script_output = run_shell_script(script_path)
     
     # Split the string into lines
