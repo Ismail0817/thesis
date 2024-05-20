@@ -5,6 +5,7 @@ from flask import Flask, request
 import requests
 import yaml
 from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 
 
 app = Flask(__name__)
@@ -53,14 +54,37 @@ def perform_task2(message):
     print("Message:", message)
     deploy_pod()
     deploy_service()
-    # Send data to the API endpoint
-    response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    print(response.text)
-    payload = {'message': response.text, 'task': 'task2'}
-    response = requests.post('http://192.168.10.148:5003/api', json=payload)
+    
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+    # Create an instance of the API class
+    v1 = client.CoreV1Api()
+    namespace='default'
+    try:
+        # List all pods in the specified namespace
+        pod_list = v1.list_namespaced_pod(namespace)
+        for pod in pod_list.items:
+            name = pod.metadata.name
+            status = pod.status.phase
+            print(f"Pod Name: {name}, Status: {status}")
+        if name.startswith("fog"):
+            print("The value starts with 'fog'.")
+        else:
+            print("The value does not start with 'fog'.")
 
-    # Print the response from the server
-    print(response.text)
+    except ApiException as e:
+        print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
+
+
+
+
+    # # Send data to the API endpoint
+    # response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
+    # print(response.text)
+    # payload = {'message': response.text, 'task': 'task2'}
+    # response = requests.post('http://192.168.10.148:5003/api', json=payload)
+
+    # # Print the response from the server
+    # print(response.text)
     # # print(request_data.get('message'))
     
 
