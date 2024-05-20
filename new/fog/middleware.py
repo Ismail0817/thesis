@@ -82,8 +82,8 @@ def perform_task2(message):
             print(f"Service '{service_name}' in namespace '{namespace}' status:")
             print(f"Type: {service.spec.type}")
             print(f"Cluster IP: {service.spec.cluster_ip}")
-            print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
-            # print(f"Ports: {service.spec.ports}")
+            print(f"External IPs: {service.status.load_balancer.ingress[0].ip if service.status.load_balancer else 'None'}")
+            print(f"Ports: {service.spec.ports}")
 
             if status == "Running":
                 if service.status.load_balancer.ingress:
@@ -93,7 +93,7 @@ def perform_task2(message):
         except ApiException as e:
             print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
         
-    # time.sleep(10)
+    time.sleep(1)
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
