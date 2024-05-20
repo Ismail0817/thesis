@@ -18,9 +18,9 @@ def handle_container_api_request():
     # task = request_data.get('task')
     # print(res)
     # print(task)
-    # if task_type == 'task1':
-    #     response = requests.post('http://192.168.10.243:5003/api', json=request_data)
-    #     print(response.text)
+    if task_type == 'task1':
+        response = requests.post('http://192.168.10.148:5003/api', json=request_data)
+        print(response.text)
     # elif task_type == 'task2':
     #     payload = {'message': request_data, 'task': 'task2'}
     #     response = requests.post('http://192.168.10.147:5000/api', json=payload)

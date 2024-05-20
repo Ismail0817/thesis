@@ -6,7 +6,7 @@ app = Flask(__name__)
 def receive_message():
     message = request.get_json()
     print(message)
-    return 'Message received'
+    return 'Message received in user API\n'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003)
