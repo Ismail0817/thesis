@@ -26,8 +26,8 @@ def handle_api_request():
     message = json.loads(message_json)
 
     # Now `message` is a list of dictionaries and `task` is a string
-    print("Message:", message)
-    print("Task:", task)
+    # print("Message:", message)
+    # print("Task:", task)
 
     # print(request_data)
     # print(type(request_data))
@@ -39,9 +39,9 @@ def handle_api_request():
     print(result)   
     if result == "success":
         threading.Thread(target=perform_task3, args=(message,task)).start()
-        return {'result': 'Task 2 deployed successfully wait for result'}
+        return {'result': 'Task 3 deployed successfully wait for result'}
     else:
-        return {'result': 'Task 2 failed because of fog negotiation failure'}
+        return {'result': 'Task 3 failed because of cloud negotiation failure'}
  
 
     # return {'result': 'data received in cloud middleware API'}
@@ -51,8 +51,8 @@ def perform_task3(message,task_type):
     # ...
     print("inside thread\n sending data to fog container\n")
     print("Message:", message)
-    # deploy_pod()
-    # deploy_service()
+    deploy_pod()
+    deploy_service()
     
     # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
     # # Create an instance of the API class
