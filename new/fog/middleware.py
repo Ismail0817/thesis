@@ -73,9 +73,9 @@ def perform_task2(message):
                 print("The value starts with 'fog'.")
             else:
                 print("The value does not start with 'fog'.")
-            if status == "Running":
-                print("Pod is running")
-                break
+            # if status == "Running":
+            #     print("Pod is running")
+            #     break
 
             service = v1.read_namespaced_service(name=service_name, namespace=namespace)
             # Print the service status
@@ -83,7 +83,12 @@ def perform_task2(message):
             print(f"Type: {service.spec.type}")
             print(f"Cluster IP: {service.spec.cluster_ip}")
             print(f"External IPs: {service.status.load_balancer.ingress if service.status.load_balancer else 'None'}")
-            print(f"Ports: {service.spec.ports}")
+            # print(f"Ports: {service.spec.ports}")
+
+            if status == "Running":
+                if service.status.load_balancer:
+                    print("Pod is running")
+                    break
 
         except ApiException as e:
             print(f"Exception when calling CoreV1Api->list_namespaced_pod: {e}")
