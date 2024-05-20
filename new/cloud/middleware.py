@@ -54,43 +54,43 @@ def perform_task3(message,task_type):
     deploy_pod()
     deploy_service()
     
-    # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
-    # # Create an instance of the API class
-    # api_instance = client.AppsV1Api()
-    # namespace='default'
-    # service_name='fog-service'
-    # deployment_name='fog'
-    # while True:
-    #     try:
-    #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-    #         if deployment.status.available_replicas == deployment.spec.replicas:
-    #             print("Deployment is ready")
-    #             break
-    #     except Exception as e:
-    #         print(f"Error checking deployment: {e}")
-    #     # time.sleep(1)
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+    # Create an instance of the API class
+    api_instance = client.AppsV1Api()
+    namespace='default'
+    service_name='cloud-service'
+    deployment_name='cloud'
+    while True:
+        try:
+            deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
+            if deployment.status.available_replicas == deployment.spec.replicas:
+                print("Deployment is ready")
+                break
+        except Exception as e:
+            print(f"Error checking deployment: {e}")
+        # time.sleep(1)
     
-    # api_instance = client.CoreV1Api()
-    # while True:
-    #     try:
-    #         service = api_instance.read_namespaced_service(service_name, namespace)
-    #         if service.status.load_balancer.ingress:
-    #             print("Service is ready")
-    #             break
-    #     except Exception as e:
-    #         print(f"Error checking service: {e}")
-    #     # time.sleep(1)
+    api_instance = client.CoreV1Api()
+    while True:
+        try:
+            service = api_instance.read_namespaced_service(service_name, namespace)
+            if service.status.load_balancer.ingress:
+                print("Service is ready")
+                break
+        except Exception as e:
+            print(f"Error checking service: {e}")
+        # time.sleep(1)
         
-    # time.sleep(3)
-    # # Send data to the pod API endpoint
-    # response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    # print(response.text)
+    time.sleep(3)
+    # Send data to the pod API endpoint
+    response = requests.post("http://192.168.1.147:30234/preprocess", json=message)
+    print(response.text)
 
-    # if task_type == 'task2':
-    #     payload = {'message': response.text, 'task': 'task2'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     # Print the response from the server
-    #     print(response.text)
+    payload = {'message': response.text, 'task': 'task3'}
+    response = requests.post('http://192.168.10.148:5003/api', json=payload)
+    # Print the response from the server
+    print(response.text)
+
     # elif task_type == 'task3':
     #     payload = {'message': response.text, 'task': 'task3'}
     #     response = requests.post('http://192.168.10.147:5000/api', json=payload)
