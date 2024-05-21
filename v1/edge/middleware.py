@@ -31,7 +31,7 @@ def handle_container_api_request():
         print(response.text)
         # print("task2 is due")
     elif task_type == 'task3':
-        payload = {'message': request_data, 'task': 'task3'}
+        payload = {'message': res, 'task': 'task3'}
         response = requests.post('http://192.168.10.146:5000/api', json=payload)
         print(response.text)
         payload = {'message': "task 2 started", 'task': 'task3'}
