@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: edge
-        image: ismailshojeeb/cloud:v1
+        image: ismailshojeeb/cloud:v2
         ports:
         - containerPort: 5005
