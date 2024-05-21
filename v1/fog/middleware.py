@@ -15,19 +15,20 @@ app = Flask(__name__)
 def handle_api_request():
     request_data = request.get_json()
     global task_type
-    print(request_data)
+
+    # print(request_data)
     # Extract the request type from the request data
     # task_type = request_data.get('task')
     
-    # message_json = request_data['message']
-    # task = request_data['task']
+    message_json = request_data['message']
+    task = request_data['task']
 
     # # Parse the JSON string in the message
-    # message = json.loads(message_json)
+    message = json.loads(message_json)
 
     # # Now `message` is a list of dictionaries and `task` is a string
-    # print("Message:", message)
-    # print("Task:", task)
+    print("Message:", message)
+    print("Task:", task)
     return {'result': 'data received in fog middleware API'}
     # print(request_data)
     # print(type(request_data))
