@@ -17,7 +17,9 @@ def preprocess():
 
     # Drop rows with NaN values
     df = df.dropna()
-    print(df, "\n",  flush=True)   
+    print(df, "\n",  flush=True)
+
+    # return jsonify(df.to_dict(orient='records'))    
 
     # Normalize or standardize numerical values
     columns_to_scale = df.columns.difference(['utc', 'Fire Alarm'])

@@ -23,29 +23,27 @@ def handle_api_request():
     message_json = request_data['message']
     task = request_data['task']
 
-    # # Parse the JSON string in the message
-    # message = json.loads(message_json)
 
-    # # Now `message` is a list of dictionaries and `task` is a string
     print("Message:", message_json)
     print("Task:", task)
-    return {'result': 'data received in fog middleware API'}
+    # return {'result': 'data received in fog middleware API'}
     # print(request_data)
     # print(type(request_data))
     # print(request_data.get('message'))
 
-    # if task == 'task2' or task == 'task3':
-    #     # Perform task 2
-    #     result = negotiate_fog()
-    #     print(result)   
-    #     if result == "success":
-    #         threading.Thread(target=perform_task2, args=(message,task)).start()
-    #         return {'result': 'Task 2 deployed successfully wait for result'}
-    #     else:
-    #         return {'result': 'Task 2 failed because of fog negotiation failure'}
-    # else:
-    #     # Invalid request type
-    #     return {'error': 'Invalid request type'}
+    if task == 'task2' or task == 'task3':
+        # Perform task 2
+        result = negotiate_fog()
+        print(result) 
+        return {'result': 'data received in fog middleware API'}  
+        # if result == "success":
+        #     threading.Thread(target=perform_task2, args=(message,task)).start()
+        #     return {'result': 'Task 2 deployed successfully wait for result'}
+        # else:
+        #     return {'result': 'Task 2 failed because of fog negotiation failure'}
+    else:
+        # Invalid request type
+        return {'error': 'Invalid request type'}
 
     # return {'result': 'data received in fog middleware API'}
 
