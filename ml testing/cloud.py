@@ -8,6 +8,7 @@ from sklearn.svm import SVC
 
 app = Flask(__name__)
 
+
 @app.route('/train', methods=['POST'])
 def preprocess():
     data = request.get_json()
