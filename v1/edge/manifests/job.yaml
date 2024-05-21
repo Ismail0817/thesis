@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: run-once-container-edge
-        image: ismailshojeeb/edge:v10
+        image: ismailshojeeb/edge:v11
         command: ["python", "sub.py"]
       restartPolicy: Never
   backoffLimit: 0

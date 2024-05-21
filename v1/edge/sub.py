@@ -68,8 +68,12 @@ print(json.dumps(merged_list, indent=4))
 
 # Send merged data to API endpoint
 api_endpoint = "http://192.168.10.145:5000/container_api" 
+# headers = {"Content-Type": "application/json"}
+# response = requests.post(api_endpoint, json=merged_list, headers=headers)
+
 headers = {"Content-Type": "application/json"}
-response = requests.post(api_endpoint, json=merged_list, headers=headers)
+payload = {"message": merged_list}  # Wrap the list in a dictionary with key "data"
+response = requests.post(api_endpoint, json=payload, headers=headers)
 
 if response.status_code == 200:
     print("Data successfully sent to the API endpoint.")
