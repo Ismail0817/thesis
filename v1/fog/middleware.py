@@ -90,11 +90,11 @@ def perform_task2(message,task_type):
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
     print(response.text)
 
-    # if task_type == 'task2':
-    #     payload = {'message': response.text, 'task': 'task2'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     # Print the response from the server
-    #     print(response.text)
+    if task_type == 'task2':
+        payload = {'message': response.text, 'task': 'task2'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        # Print the response from the server
+        print(response.text)
     # elif task_type == 'task3':
     #     payload = {'message': response.text, 'task': 'task3'}
     #     response = requests.post('http://192.168.10.147:5000/api', json=payload)
