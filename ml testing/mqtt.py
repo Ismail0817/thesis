@@ -22,7 +22,7 @@ for index, row in df.iterrows():
             message = json.dumps({"utc": utc, col: row[col]})
             client.publish(topic, message)
             print(f"Published to {topic}: {message}")
-    time.sleep(0.5)  # Wait for 1 second before sending the next row
+    time.sleep(0.1)  # Wait for 1 second before sending the next row
     print("\n")
 
 print("All data published.")
