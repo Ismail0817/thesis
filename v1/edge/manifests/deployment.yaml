@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge
+spec:
+  selector:
+    matchLabels:
+      app: edge
+  template:
+    metadata:
+      labels:
+        app: edge
+      name: edge
+    spec:
+      containers:
+      - name: edge
+        image: ismailshojeeb/edge:v8
