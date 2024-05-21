@@ -95,14 +95,14 @@ def perform_task2(message,task_type):
         response = requests.post('http://192.168.10.148:5003/api', json=payload)
         # Print the response from the server
         print(response.text)
-    # elif task_type == 'task3':
-    #     payload = {'message': response.text, 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.147:5000/api', json=payload)
-    #     print(response.text)
-    #     payload = {'message': "task 3 started", 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     print(response.text)
-    #     print("task 3 is due")
+    elif task_type == 'task3':
+        payload = {'message': response.text, 'task': 'task3'}
+        response = requests.post('http://192.168.10.147:5000/api', json=payload)
+        print(response.text)
+        payload = {'message': "task 3 started", 'task': 'task3'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        print(response.text)
+        print("task 3 is due")
     
 
 def negotiate_fog():
