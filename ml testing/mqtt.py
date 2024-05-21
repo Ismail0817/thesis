@@ -9,9 +9,10 @@ client = mqtt.Client()
 client.connect(broker_address, 1883, 60)
 
 # Read CSV file
-csv_file = "smoke_detection.csv"  # Replace with your CSV file path
-df = pd.read_csv(csv_file, delimiter=';')  # Use semicolon as delimiter
+csv_file = "interleaved_output.csv"  # Replace with your CSV file path
+df = pd.read_csv(csv_file, delimiter=',')  # Use semicolon as delimiter
 
+print (df.head())
 # Publish data
 for index, row in df.iterrows():
     utc = row['UTC']
@@ -21,7 +22,7 @@ for index, row in df.iterrows():
             message = json.dumps({"utc": utc, col: row[col]})
             client.publish(topic, message)
             print(f"Published to {topic}: {message}")
-    time.sleep(1)  # Wait for 1 second before sending the next row
+    time.sleep(0.5)  # Wait for 1 second before sending the next row
     print("\n")
 
 print("All data published.")
