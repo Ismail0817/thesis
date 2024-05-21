@@ -35,12 +35,12 @@ def handle_api_request():
         # Perform task 2
         result = negotiate_fog()
         print(result) 
-        return {'result': 'data received in fog middleware API'}  
-        # if result == "success":
-        #     threading.Thread(target=perform_task2, args=(message,task)).start()
-        #     return {'result': 'Task 2 deployed successfully wait for result'}
-        # else:
-        #     return {'result': 'Task 2 failed because of fog negotiation failure'}
+        # return {'result': 'data received in fog middleware API'}  
+        if result == "success":
+            threading.Thread(target=perform_task2, args=(message_json,task)).start()
+            return {'result': 'Task 2 deployed successfully wait for result'}
+        else:
+            return {'result': 'Task 2 failed because of fog negotiation failure'}
     else:
         # Invalid request type
         return {'error': 'Invalid request type'}
@@ -51,55 +51,58 @@ def perform_task2(message,task_type):
     # Logic for task 2
     # ...
     print("inside thread\n sending data to fog container\n")
-    # print("Message:", task_type)
-    deploy_pod()
-    deploy_service()
-    
-    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
-    # Create an instance of the API class
-    api_instance = client.AppsV1Api()
-    namespace='default'
-    service_name='fog-service'
-    deployment_name='fog'
-    while True:
-        try:
-            deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-            if deployment.status.available_replicas == deployment.spec.replicas:
-                print("Deployment is ready")
-                break
-        except Exception as e:
-            print(f"Error checking deployment: {e}")
-        # time.sleep(1)
-    
-    api_instance = client.CoreV1Api()
-    while True:
-        try:
-            service = api_instance.read_namespaced_service(service_name, namespace)
-            if service.status.load_balancer.ingress:
-                print("Service is ready")
-                break
-        except Exception as e:
-            print(f"Error checking service: {e}")
-        # time.sleep(1)
-        
-    time.sleep(3)
-    # Send data to the pod API endpoint
-    response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    print(response.text)
+    print("Message:", message)
+    print("Task:", task_type)
 
-    if task_type == 'task2':
-        payload = {'message': response.text, 'task': 'task2'}
-        response = requests.post('http://192.168.10.148:5003/api', json=payload)
-        # Print the response from the server
-        print(response.text)
-    elif task_type == 'task3':
-        payload = {'message': response.text, 'task': 'task3'}
-        response = requests.post('http://192.168.10.147:5000/api', json=payload)
-        print(response.text)
-        payload = {'message': "task 3 started", 'task': 'task3'}
-        response = requests.post('http://192.168.10.148:5003/api', json=payload)
-        print(response.text)
-        print("task 3 is due")
+
+    # deploy_pod()
+    # deploy_service()
+    
+    # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+    # # Create an instance of the API class
+    # api_instance = client.AppsV1Api()
+    # namespace='default'
+    # service_name='fog-service'
+    # deployment_name='fog'
+    # while True:
+    #     try:
+    #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
+    #         if deployment.status.available_replicas == deployment.spec.replicas:
+    #             print("Deployment is ready")
+    #             break
+    #     except Exception as e:
+    #         print(f"Error checking deployment: {e}")
+    #     # time.sleep(1)
+    
+    # api_instance = client.CoreV1Api()
+    # while True:
+    #     try:
+    #         service = api_instance.read_namespaced_service(service_name, namespace)
+    #         if service.status.load_balancer.ingress:
+    #             print("Service is ready")
+    #             break
+    #     except Exception as e:
+    #         print(f"Error checking service: {e}")
+    #     # time.sleep(1)
+        
+    # time.sleep(3)
+    # # Send data to the pod API endpoint
+    # response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
+    # print(response.text)
+
+    # if task_type == 'task2':
+    #     payload = {'message': response.text, 'task': 'task2'}
+    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
+    #     # Print the response from the server
+    #     print(response.text)
+    # elif task_type == 'task3':
+    #     payload = {'message': response.text, 'task': 'task3'}
+    #     response = requests.post('http://192.168.10.147:5000/api', json=payload)
+    #     print(response.text)
+    #     payload = {'message': "task 3 started", 'task': 'task3'}
+    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
+    #     print(response.text)
+    #     print("task 3 is due")
     
 
 def negotiate_fog():
