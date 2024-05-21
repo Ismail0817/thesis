@@ -24,10 +24,10 @@ def handle_api_request():
     task = request_data['task']
 
     # # Parse the JSON string in the message
-    message = json.loads(message_json)
+    # message = json.loads(message_json)
 
     # # Now `message` is a list of dictionaries and `task` is a string
-    print("Message:", message)
+    print("Message:", message_json)
     print("Task:", task)
     return {'result': 'data received in fog middleware API'}
     # print(request_data)
