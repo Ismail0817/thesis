@@ -76,6 +76,8 @@ def perform_task1(task_type,collection_time):
     # print("inside thread\nsending data to fog container\n")
     print("Data Collection Time:", collection_time)
     print("Task:", task_type)
+    print("Starting orchestration...")
+    start_time = time.time()
     deploy_pod()
     deploy_service()
 
@@ -115,6 +117,9 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Flask server is ready. Proceeding to send data.")
+    end_time = time.time()
+    orchestration_time = end_time - start_time
+    print("Orchestration Time:", orchestration_time)    
     # time.sleep(1)
     # URL of the Flask API endpoint
     url = 'http://192.168.1.145:30234/collect'
