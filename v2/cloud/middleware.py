@@ -297,7 +297,7 @@ def continuous_monitoring():
     while True:
         cpu_usage, memory_usage = monitor_resources()
         print(f"Continuous Monitoring - CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
-        time.sleep(10)  # Adjust the interval as needed
+        time.sleep(1)  # Adjust the interval as needed
 
 if __name__ == '__main__':
     monitoring_thread = threading.Thread(target=continuous_monitoring, daemon=True)
