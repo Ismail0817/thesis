@@ -115,7 +115,7 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Flask server is ready. Proceeding to send data.")
-    time.sleep(1)
+    # time.sleep(1)
     # URL of the Flask API endpoint
     url = 'http://192.168.1.145:30234/collect'
 
