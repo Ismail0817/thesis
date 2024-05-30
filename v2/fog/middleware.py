@@ -53,6 +53,8 @@ def perform_task2(message,task_type):
     # print("inside thread\nsending data to fog container\n")
     # print("Message:", message)
     # print("Task:", task_type)
+    print("Starting orchestration...")
+    start_time = time.time()
 
     deploy_pod()
     deploy_service()
@@ -74,8 +76,8 @@ def perform_task2(message,task_type):
         deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
         # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
-        if not deployment_ready or not service_ready:
-            print("Waiting for Deployment and Service to be ready...")
+        # if not deployment_ready or not service_ready:
+        #     print("Waiting for Deployment and Service to be ready...")
 
     print("Deployment and Service are ready. Checking Flask server status...")
 
@@ -88,12 +90,14 @@ def perform_task2(message,task_type):
     # Check Flask server readiness
     while not flask_ready:
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
-        if not flask_ready:
-            print("Waiting for Flask server to be ready...")
+        # if not flask_ready:
+        #     print("Waiting for Flask server to be ready...")
 
     print("Flask server is ready. Proceeding to send data.")
 
-
+    end_time = time.time()
+    orchestration_time = end_time - start_time
+    print("Orchestration Time:", orchestration_time)  
 
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
@@ -217,10 +221,10 @@ def check_deployment_status(namespace, deployment_name):
     try:
         deployment = app_v1.read_namespaced_deployment(name=deployment_name, namespace=namespace)
         if deployment.status.ready_replicas == deployment.status.replicas:
-            print("Deployment is ready.")
+            # print("Deployment is ready.")
             return True
         else:
-            print("Deployment is not ready.")
+            # print("Deployment is not ready.")
             return False
     except ApiException as e:
         print(f"Exception when reading Deployment: {e}")
@@ -231,12 +235,12 @@ def check_pod_status(namespace, deployment_name):
         pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
         for pod in pods.items:
             if pod.status.phase == 'Running':
-                print(f"Pod {pod.metadata.name} is running.")
+                # print(f"Pod {pod.metadata.name} is running.")
                 return True
-            elif pod.status.phase == 'Pending':
-                print(f"Pod {pod.metadata.name} is pending.")
-            elif pod.status.phase == 'Failed':
-                print(f"Pod {pod.metadata.name} has failed.")
+            # elif pod.status.phase == 'Pending':
+            #     print(f"Pod {pod.metadata.name} is pending.")
+            # elif pod.status.phase == 'Failed':
+            #     print(f"Pod {pod.metadata.name} has failed.")
         return False
     except ApiException as e:
         print(f"Exception when listing Pods: {e}")
@@ -247,7 +251,7 @@ def check_service_status(namespace, service_name):
         service = core_v1.read_namespaced_service(name=service_name, namespace=namespace)
         if service.spec.type == 'LoadBalancer':
             node_port = service.spec.ports[0].node_port
-            print(f"Service is up with NodePort: {node_port}")
+            # print(f"Service is up with NodePort: {node_port}")
             return True
         else:
             print("Service is not of type NodePort.")
