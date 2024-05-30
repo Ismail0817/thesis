@@ -16,7 +16,7 @@ def handle_container_api_request():
     # Logic for handling another API request
     # ...
     request_data = request.get_json()
-    print(request_data)
+    # print(request_data)
     # return {'result': 'Data received in container API'}
     # Extract the request type from the request data
     res = request_data.get('message')
@@ -56,7 +56,7 @@ def handle_api_request():
     if task_type == 'task1' or task_type == 'task2' or task_type == 'task3':
         # Perform task 1
         result = negotiate_edge()
-        print(result) 
+        # print(result) 
         # return {'result': 'data received in fog middleware API'}  
         if result == "success":
             threading.Thread(target=perform_task1, args=(task_type,time)).start()
@@ -73,8 +73,8 @@ def perform_task1(task_type,collection_time):
     # Logic for task 1
     # ...
 
-    print("inside thread\n sending data to fog container\n")
-    print("Time:", collection_time)
+    # print("inside thread\nsending data to fog container\n")
+    print("Data Collection Time:", collection_time)
     print("Task:", task_type)
     deploy_pod()
     deploy_service()
@@ -133,7 +133,7 @@ def perform_task1(task_type,collection_time):
     response = requests.post(url, headers=headers, data=json.dumps(data))
 
     # Print the response from the server
-    print(response.status_code)
+    # print(response.status_code)
     print(response.json())
 
     

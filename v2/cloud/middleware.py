@@ -26,7 +26,7 @@ def handle_api_request():
     message = json.loads(message_json)
 
     # Now `message` is a list of dictionaries and `task` is a string
-    print("Message:", message)
+    # print("Message:", message)
     print("Task:", task)
 
     # return {'result': 'data received in cloud middleware API'}
@@ -38,7 +38,7 @@ def handle_api_request():
 
     # Perform task 3
     result = negotiate_cloud()
-    print(result)   
+    # print(result)   
     if result == "success":
         threading.Thread(target=perform_task3, args=(message,task)).start()
         return {'result': 'Task 3 deployed successfully wait for result'}
@@ -51,8 +51,8 @@ def handle_api_request():
 def perform_task3(message,task_type):
     # Logic for task 3
     # ...
-    print("inside thread\n sending data to fog container\n")
-    print("Message:", message)
+    # print("inside thread\nsending data to fog container\n")
+    # print("Message:", message)
     deploy_pod()
     deploy_service()
 
