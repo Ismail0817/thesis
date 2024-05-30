@@ -77,6 +77,13 @@ def perform_task1(task_type,collection_time):
     # print("inside thread\nsending data to fog container\n")
     print("Data Collection Time:", collection_time)
     print("Task:", task_type)
+
+
+    # Monitor initial CPU and memory usage before orchestration
+    initial_cpu, initial_memory = monitor_resources()
+    print(f"Initial CPU Usage: {initial_cpu}%")
+    print(f"Initial Memory Usage: {initial_memory}%")
+
     print("Starting orchestration...")
     start_time = time.time()
     deploy_pod()
@@ -98,11 +105,12 @@ def perform_task1(task_type,collection_time):
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
         service_ready = check_service_status(namespace, service_name)
-        # Collect CPU and memory usage data
-        cpu_usage = psutil.cpu_percent(interval=1)
-        memory_info = psutil.virtual_memory()
-        print(f"CPU Usage: {cpu_usage}%")
-        print(f"Memory Usage: {memory_info.percent}%")
+        
+        # Collect CPU and memory usage data during orchestration
+        cpu_usage, memory_usage = monitor_resources()
+        print(f"CPU Usage during orchestration: {cpu_usage}%")
+        print(f"Memory Usage during orchestration: {memory_usage}%")
+
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
             # time.sleep(5)  # Wait before checking again
@@ -329,9 +337,12 @@ def check_flask_ready(namespace, pod_name, log_entry):
         print(f"Exception when reading Pod logs: {e}")
         return False
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+def monitor_resources():
+    # Function to capture CPU and memory usage
     cpu_usage = psutil.cpu_percent(interval=1)
     memory_info = psutil.virtual_memory()
-    print(f"CPU Usage before any api request: {cpu_usage}%")
-    print(f"Memory Usage before any api request: {memory_info.percent}%")
+    return cpu_usage, memory_info.percent
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+    
