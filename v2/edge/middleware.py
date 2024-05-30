@@ -47,37 +47,43 @@ def handle_api_request():
     global task_type
     # Extract the request type from the request data
     task_type = request_data.get('message')
+    time = request_data.get('time')
     # print(task_type)
 
     if task_type == 'task1' or task_type == 'task2' or task_type == 'task3':
-        # Perform task 2
+        # Perform task 1
         result = negotiate_edge()
         print(result) 
-        # # return {'result': 'data received in fog middleware API'}  
-        # if result == "success":
-        #     threading.Thread(target=perform_task1, args=(message_json,task)).start()
-        #     return {'result': 'Task 2 deployed successfully wait for result'}
-        # else:
-        #     return {'result': 'Task 2 failed because of fog negotiation failure'}
+        # return {'result': 'data received in fog middleware API'}  
+        if result == "success":
+            threading.Thread(target=perform_task1, args=(task_type,time)).start()
+            return {'result': 'Task 1 deployed successfully wait for result'}
+        else:
+            return {'result': 'Task 1 failed because of edge negotiation failure'}
     else:
         # Invalid request type
-        result = {'error': 'Invalid request type'}
+        return {'error': 'Invalid request type'}
 
-    return {'result': 'Task 2 deployed successfully wait for result'}
+    # return {'result': 'Task 2 deployed successfully wait for result'}
 
-def perform_task1(request_data):
+def perform_task1(task_type,time):
     # Logic for task 1
     # ...
-    result = negotiate_edge()
-    # print(result)
-    print(request_data.get('message'))
-    if result == "success":
-        # return {'result': 'Task 1 completed'}
-        deploy_pod()
-        # deploy_service(request_data.get('message'))
-        return {'result': 'Task 1 deployed successfully wait for result'}
-    else:
-        return {'result': 'Task 1 failed because of edge negotiation failure'}
+
+    print("inside thread\n sending data to fog container\n")
+    print("Time:", time)
+    print("Task:", task_type)
+
+    # result = negotiate_edge()
+    # # print(result)
+    # print(request_data.get('message'))
+    # if result == "success":
+    #     # return {'result': 'Task 1 completed'}
+    #     deploy_pod()
+    #     # deploy_service(request_data.get('message'))
+    #     return {'result': 'Task 1 deployed successfully wait for result'}
+    # else:
+    #     return {'result': 'Task 1 failed because of edge negotiation failure'}
 
 
 def negotiate_edge():
