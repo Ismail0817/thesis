@@ -12,6 +12,15 @@ from kubernetes.client.rest import ApiException
 
 app = Flask(__name__)
 
+# Event to control the continuous monitoring thread
+monitoring_event = threading.Event()
+def continuous_monitoring():
+    while not monitoring_event.is_set():
+        cpu_usage, memory_usage = monitor_resources()
+        print(f"Continuous Monitoring - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        time.sleep(0.1)  # Adjust the frequency as needed
+
+
 @app.route('/api', methods=['POST'])
 def handle_api_request():
     request_data = request.get_json()
@@ -99,8 +108,9 @@ def perform_task3(message,task_type):
 
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
-        print(f"CPU Usage during orchestration: {cpu_usage}%")
-        print(f"Memory Usage during orchestration: {memory_usage}%")
+        # print(f"CPU Usage during orchestration: {cpu_usage}%")
+        # print(f"Memory Usage during orchestration: {memory_usage}%")
+        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         # if not deployment_ready or not service_ready:
@@ -130,8 +140,11 @@ def perform_task3(message,task_type):
     orchestration_time = end_time - start_time
     print("Orchestration Time + Flask ready time:", orchestration_time) 
 
+
+    print("Computation Started")
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.147:30234/train", json=message)
+    print("Computation Ended")
     print(response.text)
 
     payload = {'message': response.text, 'task': 'task3'}
@@ -308,11 +321,7 @@ def monitor_resources():
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 
-def continuous_monitoring():
-    while True:
-        cpu_usage, memory_usage = monitor_resources()
-        print(f"Continuous Monitoring - CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
-        time.sleep(1)  # Adjust the interval as needed
+
 
 if __name__ == '__main__':
     monitoring_thread = threading.Thread(target=continuous_monitoring, daemon=True)
