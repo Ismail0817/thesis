@@ -12,12 +12,6 @@ from kubernetes.client.rest import ApiException
 
 app = Flask(__name__)
 
-
-cpu_usage = psutil.cpu_percent(interval=1)
-memory_info = psutil.virtual_memory()
-print(f"CPU Usage before any api request: {cpu_usage}%")
-print(f"Memory Usage before any api request: {memory_info.percent}%")
-
 @app.route('/container_api', methods=['POST'])
 def handle_container_api_request():
     # Logic for handling another API request
@@ -337,3 +331,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_info = psutil.virtual_memory()
+    print(f"CPU Usage before any api request: {cpu_usage}%")
+    print(f"Memory Usage before any api request: {memory_info.percent}%")
