@@ -18,7 +18,7 @@ def continuous_monitoring():
     while not monitoring_event.is_set():
         cpu_usage, memory_usage = monitor_resources()
         print(f"Continuous Monitoring - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
-        time.sleep(0.1)  # Adjust the frequency as needed
+        time.sleep(0.01)  # Adjust the frequency as needed
 
 
 @app.route('/api', methods=['POST'])
