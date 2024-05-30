@@ -3,6 +3,7 @@ import subprocess
 import threading
 import time
 from flask import Flask, request
+import psutil
 import requests
 import yaml
 from kubernetes import client, config
@@ -97,6 +98,11 @@ def perform_task1(task_type,collection_time):
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
         service_ready = check_service_status(namespace, service_name)
+        # Collect CPU and memory usage data
+        cpu_usage = psutil.cpu_percent(interval=1)
+        memory_info = psutil.virtual_memory()
+        print(f"CPU Usage: {cpu_usage}%")
+        print(f"Memory Usage: {memory_info.percent}%")
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
             # time.sleep(5)  # Wait before checking again
