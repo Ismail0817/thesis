@@ -85,10 +85,12 @@ def perform_task1(task_type,collection_time):
     namespace = 'default'
     job_name = 'run-once-job-edge'
     service_name = 'run-once-job-edge-service'
+    flask_ready_log_entry = 'Running on all addresses'
 
     # Check Job, Pod, and Service status
     job_ready = False
     service_ready = False
+    flask_ready = False
 
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
@@ -97,8 +99,22 @@ def perform_task1(task_type,collection_time):
             print("Waiting for Job and Service to be ready...")
             # time.sleep(5)  # Wait before checking again
 
-    print("Job and Service are ready. Proceeding to send data.")
+    print("Job and Service are ready. Checking Flask server status...")
     time.sleep(1)
+    # Fetch the Pod name
+    pod_name = None
+    pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+    if pods.items:
+        pod_name = pods.items[0].metadata.name
+
+    # Check Flask server readiness
+    while not flask_ready:
+        flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
+        if not flask_ready:
+            print("Waiting for Flask server to be ready...")
+            # time.sleep(5)  # Wait before checking again
+
+    print("Flask server is ready. Proceeding to send data.")
     # URL of the Flask API endpoint
     url = 'http://192.168.1.145:30234/collect'
 
@@ -269,6 +285,17 @@ def check_service_status(namespace, service_name):
         print(f"Exception when reading Service: {e}")
         return False
 
+def check_flask_ready(namespace, pod_name, log_entry):
+    try:
+        logs = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
+        if log_entry in logs:
+            print("Flask server is ready.")
+            return True
+        else:
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Pod logs: {e}")
+        return False
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
