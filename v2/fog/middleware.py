@@ -81,6 +81,10 @@ def perform_task2(message,task_type):
 
     print("Deployment and Service are ready. Checking Flask server status...")
 
+    end_time = time.time()
+    orchestration_time = end_time - start_time
+    print("Orchestration Time:", orchestration_time) 
+
     # Fetch the Pod name
     pod_name = None
     pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
@@ -97,7 +101,7 @@ def perform_task2(message,task_type):
 
     end_time = time.time()
     orchestration_time = end_time - start_time
-    print("Orchestration Time:", orchestration_time)  
+    print("Orchestration Time + Flask ready time:", orchestration_time)  
 
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
@@ -264,7 +268,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
     try:
         logs = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
         if log_entry in logs:
-            print("Flask server is ready.")
+            # print("Flask server is ready.")
             return True
         else:
             return False

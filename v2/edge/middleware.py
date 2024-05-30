@@ -102,6 +102,11 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Job and Service are ready. Checking Flask server status...")
+
+    end_time = time.time()
+    orchestration_time = end_time - start_time
+    print("Orchestration Time:", orchestration_time) 
+
     # time.sleep(1)
     # Fetch the Pod name
     pod_name = None
@@ -119,7 +124,8 @@ def perform_task1(task_type,collection_time):
     print("Flask server is ready. Proceeding to send data.")
     end_time = time.time()
     orchestration_time = end_time - start_time
-    print("Orchestration Time:", orchestration_time)    
+    print("Orchestration Time + Flask ready time:", orchestration_time)    
+
     # time.sleep(1)
     # URL of the Flask API endpoint
     url = 'http://192.168.1.145:30234/collect'
