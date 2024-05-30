@@ -82,15 +82,15 @@ def perform_task1(task_type,time):
     namespace='default'
     service_name='run-once-container-edge-service'
     deployment_name='run-once-container-edge'
-    while True:
-        try:
-            deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-            if deployment.status.available_replicas == deployment.spec.replicas:
-                print("Deployment is ready")
-                break
-        except Exception as e:
-            print(f"Error checking deployment: {e}")
-        # time.sleep(1)
+    # while True:
+    #     try:
+    #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
+    #         if deployment.status.available_replicas == deployment.spec.replicas:
+    #             print("Deployment is ready")
+    #             break
+    #     except Exception as e:
+    #         print(f"Error checking deployment: {e}")
+    #     # time.sleep(1)
     
     api_instance = client.CoreV1Api()
     while True:
