@@ -94,7 +94,7 @@ def perform_task1(task_type,collection_time):
         service_ready = check_service_status(namespace, service_name)
         if not job_ready or not service_ready:
             print("Waiting for Job and Service to be ready...")
-            time.sleep(5)  # Wait before checking again
+            # time.sleep(5)  # Wait before checking again
 
     print("Job and Service are ready. Proceeding to send data.")
 
