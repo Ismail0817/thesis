@@ -59,7 +59,7 @@ def perform_task3(message,task_type):
     initial_cpu, initial_memory = monitor_resources()
     print(f"Initial CPU Usage: {initial_cpu}%")
     print(f"Initial Memory Usage: {initial_memory}%")
-    
+
     print("Starting orchestration...")
     start_time = time.time()
     deploy_pod()
@@ -293,6 +293,13 @@ def monitor_resources():
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 
+def continuous_monitoring():
+    while True:
+        cpu_usage, memory_usage = monitor_resources()
+        print(f"Continuous Monitoring - CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        time.sleep(10)  # Adjust the interval as needed
 
 if __name__ == '__main__':
+    monitoring_thread = threading.Thread(target=continuous_monitoring, daemon=True)
+    monitoring_thread.start()
     app.run(host='0.0.0.0', port=5000)
