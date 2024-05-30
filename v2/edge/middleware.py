@@ -1,9 +1,11 @@
 import subprocess
 import threading
+import time
 from flask import Flask, request
 import requests
 import yaml
 from kubernetes import client, config
+from kubernetes.client.rest import ApiException
 
 
 app = Flask(__name__)
@@ -66,55 +68,39 @@ def handle_api_request():
 
     # return {'result': 'Task 2 deployed successfully wait for result'}
 
-def perform_task1(task_type,time):
+def perform_task1(task_type,collection_time):
     # Logic for task 1
     # ...
 
     print("inside thread\n sending data to fog container\n")
-    print("Time:", time)
+    print("Time:", collection_time)
     print("Task:", task_type)
     deploy_pod()
     deploy_service()
 
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
-    # Create an instance of the API class
-    api_instance = client.AppsV1Api()
-    namespace='default'
-    service_name='run-once-job-edge-service'
-    deployment_name='run-once-job-edge'
-    # while True:
-    #     try:
-    #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-    #         if deployment.status.available_replicas == deployment.spec.replicas:
-    #             print("Deployment is ready")
-    #             break
-    #     except Exception as e:
-    #         print(f"Error checking deployment: {e}")
-    #     # time.sleep(1)
-    
-    api_instance = client.CoreV1Api()
-    while True:
-        try:
-            service = api_instance.read_namespaced_service(service_name, namespace)
-            if service.status.load_balancer.ingress:
-                print("Service is ready")
-                break
-        except Exception as e:
-            print(f"Error checking service: {e}")
-        # time.sleep(1)
-        
-    time.sleep(3)
 
-    # result = negotiate_edge()
-    # # print(result)
-    # print(request_data.get('message'))
-    # if result == "success":
-    #     # return {'result': 'Task 1 completed'}
-    #     deploy_pod()
-    #     # deploy_service(request_data.get('message'))
-    #     return {'result': 'Task 1 deployed successfully wait for result'}
-    # else:
-    #     return {'result': 'Task 1 failed because of edge negotiation failure'}
+    # Define namespace, Job name, and Service name
+    namespace = 'default'
+    job_name = 'run-once-job-edge'
+    service_name = 'run-once-job-edge-service'
+
+    # Check Job, Pod, and Service status
+    job_ready = False
+    service_ready = False
+
+    while not job_ready or not service_ready:
+        job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
+        service_ready = check_service_status(namespace, service_name)
+        if not job_ready or not service_ready:
+            print("Waiting for Job and Service to be ready...")
+            time.sleep(5)  # Wait before checking again
+
+    print("Job and Service are ready. Proceeding to send data.")
+
+    
+        
+
 
 
 def negotiate_edge():
@@ -210,6 +196,58 @@ def deploy_service():
         print("Service created successfully!")
     except Exception as e:
         print(f"Error creating Service: {e}")
+
+
+config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+# Initialize API clients
+batch_v1 = client.BatchV1Api()
+core_v1 = client.CoreV1Api()
+def check_job_status(namespace, job_name):
+    try:
+        job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
+        if job.status.succeeded:
+            print("Job succeeded.")
+            return True
+        elif job.status.failed:
+            print("Job failed.")
+            return False
+        elif job.status.active:
+            print("Job is still active.")
+            return True
+    except ApiException as e:
+        print(f"Exception when reading Job: {e}")
+        return False
+
+def check_pod_status(namespace, job_name):
+    try:
+        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+        for pod in pods.items:
+            if pod.status.phase == 'Running':
+                print(f"Pod {pod.metadata.name} is running.")
+                return True
+            elif pod.status.phase == 'Pending':
+                print(f"Pod {pod.metadata.name} is pending.")
+            elif pod.status.phase == 'Failed':
+                print(f"Pod {pod.metadata.name} has failed.")
+        return False
+    except ApiException as e:
+        print(f"Exception when listing Pods: {e}")
+        return False
+
+def check_service_status(namespace, service_name):
+    try:
+        service = core_v1.read_namespaced_service(name=service_name, namespace=namespace)
+        if service.spec.type == 'NodePort':
+            node_port = service.spec.ports[0].node_port
+            print(f"Service is up with NodePort: {node_port}")
+            return True
+        else:
+            print("Service is not of type NodePort.")
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Service: {e}")
+        return False
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
