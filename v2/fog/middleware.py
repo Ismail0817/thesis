@@ -73,6 +73,7 @@ def perform_task2(message,task_type):
     while not deployment_ready or not service_ready:
         deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
+        print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         if not deployment_ready or not service_ready:
             print("Waiting for Deployment and Service to be ready...")
 
