@@ -98,13 +98,13 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Job and Service are ready. Proceeding to send data.")
-    # time.sleep(5)
+    time.sleep(1)
     # URL of the Flask API endpoint
     url = 'http://192.168.1.145:30234/collect'
 
     # Data to be sent to the API
     data = {
-        'collection_time': .5  # Specify the collection time in seconds
+        'collection_time': 5  # Specify the collection time in seconds
     }
 
     # Headers
