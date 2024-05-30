@@ -282,9 +282,9 @@ def check_pod_status(namespace, job_name):
             if pod.status.phase == 'Running':
                 # print(f"Pod {pod.metadata.name} is running.")
                 return True
-            elif pod.status.phase == 'Pending':
-                # print(f"Pod {pod.metadata.name} is pending.")
-            elif pod.status.phase == 'Failed':
+            # elif pod.status.phase == 'Pending':
+            #     print(f"Pod {pod.metadata.name} is pending.")
+            # elif pod.status.phase == 'Failed':
                 # print(f"Pod {pod.metadata.name} has failed.")
         return False
     except ApiException as e:
