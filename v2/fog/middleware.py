@@ -3,6 +3,7 @@ import subprocess
 import threading
 import time
 from flask import Flask, request
+import psutil
 import requests
 import yaml
 from kubernetes import client, config
@@ -53,6 +54,12 @@ def perform_task2(message,task_type):
     # print("inside thread\nsending data to fog container\n")
     # print("Message:", message)
     # print("Task:", task_type)
+
+    # Monitor initial CPU and memory usage before orchestration
+    initial_cpu, initial_memory = monitor_resources()
+    print(f"Initial CPU Usage: {initial_cpu}%")
+    print(f"Initial Memory Usage: {initial_memory}%")
+    
     print("Starting orchestration...")
     start_time = time.time()
 
@@ -75,6 +82,12 @@ def perform_task2(message,task_type):
     while not deployment_ready or not service_ready:
         deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
+
+        # Collect CPU and memory usage data during orchestration
+        cpu_usage, memory_usage = monitor_resources()
+        print(f"CPU Usage during orchestration: {cpu_usage}%")
+        print(f"Memory Usage during orchestration: {memory_usage}%")
+
         # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         # if not deployment_ready or not service_ready:
         #     print("Waiting for Deployment and Service to be ready...")
@@ -275,6 +288,13 @@ def check_flask_ready(namespace, pod_name, log_entry):
     except ApiException as e:
         print(f"Exception when reading Pod logs: {e}")
         return False
+
+def monitor_resources():
+    # Function to capture CPU and memory usage
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_info = psutil.virtual_memory()
+    return cpu_usage, memory_info.percent
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
