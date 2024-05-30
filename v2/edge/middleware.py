@@ -76,6 +76,35 @@ def perform_task1(task_type,time):
     deploy_pod()
     deploy_service()
 
+    config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+    # Create an instance of the API class
+    api_instance = client.AppsV1Api()
+    namespace='default'
+    service_name='fog-service'
+    deployment_name='fog'
+    while True:
+        try:
+            deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
+            if deployment.status.available_replicas == deployment.spec.replicas:
+                print("Deployment is ready")
+                break
+        except Exception as e:
+            print(f"Error checking deployment: {e}")
+        # time.sleep(1)
+    
+    api_instance = client.CoreV1Api()
+    while True:
+        try:
+            service = api_instance.read_namespaced_service(service_name, namespace)
+            if service.status.load_balancer.ingress:
+                print("Service is ready")
+                break
+        except Exception as e:
+            print(f"Error checking service: {e}")
+        # time.sleep(1)
+        
+    time.sleep(3)
+
     # result = negotiate_edge()
     # # print(result)
     # print(request_data.get('message'))
