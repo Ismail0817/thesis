@@ -55,35 +55,43 @@ def perform_task3(message,task_type):
     print("Message:", message)
     deploy_pod()
     deploy_service()
-    
+
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
-    # Create an instance of the API class
-    api_instance = client.AppsV1Api()
-    namespace='default'
-    service_name='cloud-service'
-    deployment_name='cloud'
-    while True:
-        try:
-            deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-            if deployment.status.available_replicas == deployment.spec.replicas:
-                print("Deployment is ready")
-                break
-        except Exception as e:
-            print(f"Error checking deployment: {e}")
-        # time.sleep(1)
+
+    # Define namespace, Job name, and Service name
+    namespace = 'default'
+    deployment_name = 'cloud'
+    service_name = 'cloud-service'
+    flask_ready_log_entry = 'Running on all addresses'
     
-    api_instance = client.CoreV1Api()
-    while True:
-        try:
-            service = api_instance.read_namespaced_service(service_name, namespace)
-            if service.status.load_balancer.ingress:
-                print("Service is ready")
-                break
-        except Exception as e:
-            print(f"Error checking service: {e}")
-        # time.sleep(1)
-        
-    time.sleep(3)
+    # Check Job, Pod, and Service status
+    deployment_ready = False
+    service_ready = False
+    flask_ready = False
+
+    while not deployment_ready or not service_ready:
+        deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
+        service_ready = check_service_status(namespace, service_name)
+        # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
+        if not deployment_ready or not service_ready:
+            print("Waiting for Deployment and Service to be ready...")
+
+    print("Deployment and Service are ready. Checking Flask server status...")
+
+    # Fetch the Pod name
+    pod_name = None
+    pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
+    if pods.items:
+        pod_name = pods.items[0].metadata.name
+
+    # Check Flask server readiness
+    while not flask_ready:
+        flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
+        if not flask_ready:
+            print("Waiting for Flask server to be ready...")
+
+    print("Flask server is ready. Proceeding to send data.")
+
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.147:30234/train", json=message)
     print(response.text)
@@ -195,6 +203,66 @@ def deploy_service():
         print("Service created successfully!")
     except Exception as e:
         print(f"Error creating Service: {e}")
+
+config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
+# Initialize API clients
+app_v1 = client.AppsV1Api()
+core_v1 = client.CoreV1Api()
+
+def check_deployment_status(namespace, deployment_name):
+    try:
+        deployment = app_v1.read_namespaced_deployment(name=deployment_name, namespace=namespace)
+        if deployment.status.ready_replicas == deployment.status.replicas:
+            print("Deployment is ready.")
+            return True
+        else:
+            print("Deployment is not ready.")
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Deployment: {e}")
+        return False
+    
+def check_pod_status(namespace, deployment_name):
+    try:
+        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
+        for pod in pods.items:
+            if pod.status.phase == 'Running':
+                print(f"Pod {pod.metadata.name} is running.")
+                return True
+            elif pod.status.phase == 'Pending':
+                print(f"Pod {pod.metadata.name} is pending.")
+            elif pod.status.phase == 'Failed':
+                print(f"Pod {pod.metadata.name} has failed.")
+        return False
+    except ApiException as e:
+        print(f"Exception when listing Pods: {e}")
+        return False
+
+def check_service_status(namespace, service_name):
+    try:
+        service = core_v1.read_namespaced_service(name=service_name, namespace=namespace)
+        if service.spec.type == 'LoadBalancer':
+            node_port = service.spec.ports[0].node_port
+            print(f"Service is up with NodePort: {node_port}")
+            return True
+        else:
+            print("Service is not of type NodePort.")
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Service: {e}")
+        return False
+
+def check_flask_ready(namespace, pod_name, log_entry):
+    try:
+        logs = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
+        if log_entry in logs:
+            print("Flask server is ready.")
+            return True
+        else:
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Pod logs: {e}")
+        return False
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
