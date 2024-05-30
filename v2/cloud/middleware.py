@@ -2,7 +2,7 @@ import json
 import subprocess
 import threading
 import time
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import psutil
 import requests
 import yaml
@@ -15,16 +15,31 @@ app = Flask(__name__)
 @app.route('/api', methods=['POST'])
 def handle_api_request():
     request_data = request.get_json()
+
+    if not request_data:
+        return jsonify({'error': 'Invalid request: No data provided'}), 400
+
+    try:
+        message_json = request_data['message']
+        task = request_data['task']
+    except KeyError as e:
+        return jsonify({'error': f'Missing key in request data: {e}'}), 400
+
+    try:
+        message = json.loads(message_json)
+    except json.JSONDecodeError as e:
+        return jsonify({'error': f'Invalid JSON in message: {e}'}), 400
+
     global task_type
     
-    # Extract the request type from the request data
-    # task_type = request_data.get('task')
+    # # Extract the request type from the request data
+    # # task_type = request_data.get('task')
     
-    message_json = request_data['message']
-    task = request_data['task']
+    # message_json = request_data['message']
+    # task = request_data['task']
 
-    # Parse the JSON string in the message
-    message = json.loads(message_json)
+    # # Parse the JSON string in the message
+    # message = json.loads(message_json)
 
     # Now `message` is a list of dictionaries and `task` is a string
     # print("Message:", message)
