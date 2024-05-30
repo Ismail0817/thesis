@@ -237,12 +237,12 @@ def check_pod_status(namespace, job_name):
 def check_service_status(namespace, service_name):
     try:
         service = core_v1.read_namespaced_service(name=service_name, namespace=namespace)
-        if service.spec.type == 'NodePort':
+        if service.spec.type == 'LoadBalancer':
             node_port = service.spec.ports[0].node_port
             print(f"Service is up with NodePort: {node_port}")
             return True
         else:
-            print("Service is not of type NodePort.")
+            print("Service is not of type LoadBalancer.")
             return False
     except ApiException as e:
         print(f"Exception when reading Service: {e}")
