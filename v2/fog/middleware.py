@@ -255,9 +255,9 @@ def check_deployment_status(namespace, deployment_name):
         print(f"Exception when reading Deployment: {e}")
         return False
     
-def check_pod_status(namespace, job_name):
+def check_pod_status(namespace, deployment_name):
     try:
-        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
         for pod in pods.items:
             if pod.status.phase == 'Running':
                 print(f"Pod {pod.metadata.name} is running.")
@@ -279,7 +279,7 @@ def check_service_status(namespace, service_name):
             print(f"Service is up with NodePort: {node_port}")
             return True
         else:
-            print("Service is not of type LoadBalancer.")
+            print("Service is not of type NodePort.")
             return False
     except ApiException as e:
         print(f"Exception when reading Service: {e}")
