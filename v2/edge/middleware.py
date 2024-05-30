@@ -100,7 +100,7 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Job and Service are ready. Checking Flask server status...")
-    time.sleep(1)
+    # time.sleep(1)
     # Fetch the Pod name
     pod_name = None
     pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
