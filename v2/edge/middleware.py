@@ -17,31 +17,31 @@ def handle_container_api_request():
     # ...
     request_data = request.get_json()
     print(request_data)
-    return {'result': 'Data received in container API'}
-    # # Extract the request type from the request data
-    # res = request_data.get('message')
-    # # task = request_data.get('task')
-    # # print(res)
-    # # print(task)
-    # if task_type == 'task1':
-    #     response = requests.post('http://192.168.10.148:5003/api', json=request_data)
-    #     print(response.text)
-    # elif task_type == 'task2':
-    #     payload = {'message': res, 'task': 'task2'}
-    #     response = requests.post('http://192.168.10.146:5000/api', json=payload)
-    #     print(response.text)
-    #     payload = {'message': "task 2 started", 'task': 'task2'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     print(response.text)
-    #     # print("task2 is due")
-    # elif task_type == 'task3':
-    #     payload = {'message': res, 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.146:5000/api', json=payload)
-    #     print(response.text)
-    #     payload = {'message': "task 2 started", 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     print(response.text)
-    #     # print("task2 is due")
+    # return {'result': 'Data received in container API'}
+    # Extract the request type from the request data
+    res = request_data.get('message')
+    # task = request_data.get('task')
+    # print(res)
+    # print(task)
+    if task_type == 'task1':
+        response = requests.post('http://192.168.10.148:5003/api', json=request_data)
+        print(response.text)
+    elif task_type == 'task2':
+        payload = {'message': res, 'task': 'task2'}
+        response = requests.post('http://192.168.10.146:5000/api', json=payload)
+        print(response.text)
+        payload = {'message': "task 2 started", 'task': 'task2'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        print(response.text)
+        # print("task2 is due")
+    elif task_type == 'task3':
+        payload = {'message': res, 'task': 'task3'}
+        response = requests.post('http://192.168.10.146:5000/api', json=payload)
+        print(response.text)
+        payload = {'message': "task 2 started", 'task': 'task3'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        print(response.text)
+        # print("task2 is due")
     # return {'result': 'Data received in middleware API'}
 
 @app.route('/api', methods=['POST'])
