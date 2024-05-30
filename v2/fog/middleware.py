@@ -73,7 +73,7 @@ def perform_task2(message,task_type):
     while not deployment_ready or not service_ready:
         deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
-        print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
+        # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         if not deployment_ready or not service_ready:
             print("Waiting for Deployment and Service to be ready...")
 
@@ -93,54 +93,25 @@ def perform_task2(message,task_type):
 
     print("Flask server is ready. Proceeding to send data.")
 
-    # config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
-    # # Create an instance of the API class
-    # api_instance = client.AppsV1Api()
-    # namespace='default'
-    # service_name='fog-service'
-    # deployment_name='fog'
-    # while True:
-    #     try:
-    #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
-    #         if deployment.status.available_replicas == deployment.spec.replicas:
-    #             print("Deployment is ready")
-    #             break
-    #     except Exception as e:
-    #         print(f"Error checking deployment: {e}")
-    #     # time.sleep(1)
-    
-    # api_instance = client.CoreV1Api()
-    # while True:
-    #     try:
-    #         service = api_instance.read_namespaced_service(service_name, namespace)
-    #         if service.status.load_balancer.ingress:
-    #             print("Service is ready")
-    #             break
-    #     except Exception as e:
-    #         print(f"Error checking service: {e}")
-    #     # time.sleep(1)
-        
-    # time.sleep(3)
 
 
+    # Send data to the pod API endpoint
+    response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
+    print(response.text)
 
-    # # Send data to the pod API endpoint
-    # response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    # print(response.text)
-
-    # if task_type == 'task2':
-    #     payload = {'message': response.text, 'task': 'task2'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     # Print the response from the server
-    #     print(response.text)
-    # elif task_type == 'task3':
-    #     payload = {'message': response.text, 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.147:5000/api', json=payload)
-    #     print(response.text)
-    #     payload = {'message': "task 3 started", 'task': 'task3'}
-    #     response = requests.post('http://192.168.10.148:5003/api', json=payload)
-    #     print(response.text)
-    #     print("task 3 is due")
+    if task_type == 'task2':
+        payload = {'message': response.text, 'task': 'task2'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        # Print the response from the server
+        print(response.text)
+    elif task_type == 'task3':
+        payload = {'message': response.text, 'task': 'task3'}
+        response = requests.post('http://192.168.10.147:5000/api', json=payload)
+        print(response.text)
+        payload = {'message': "task 3 started", 'task': 'task3'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        print(response.text)
+        print("task 3 is due")
     
 
 def negotiate_fog():
