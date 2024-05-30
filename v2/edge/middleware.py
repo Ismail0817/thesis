@@ -80,8 +80,8 @@ def perform_task1(task_type,time):
     # Create an instance of the API class
     api_instance = client.AppsV1Api()
     namespace='default'
-    service_name='run-once-container-edge-service'
-    deployment_name='run-once-container-edge'
+    service_name='run-once-job-edge-service'
+    deployment_name='run-once-job-edge'
     # while True:
     #     try:
     #         deployment = api_instance.read_namespaced_deployment(deployment_name, namespace)
