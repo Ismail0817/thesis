@@ -97,8 +97,8 @@ def perform_task1(task_type,collection_time):
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
         service_ready = check_service_status(namespace, service_name)
-        if not job_ready or not service_ready:
-            print("Waiting for Job and Service to be ready...")
+        # if not job_ready or not service_ready:
+        #     print("Waiting for Job and Service to be ready...")
             # time.sleep(5)  # Wait before checking again
 
     print("Job and Service are ready. Checking Flask server status...")
@@ -112,8 +112,8 @@ def perform_task1(task_type,collection_time):
     # Check Flask server readiness
     while not flask_ready:
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
-        if not flask_ready:
-            print("Waiting for Flask server to be ready...")
+        # if not flask_ready:
+        #     print("Waiting for Flask server to be ready...")
             # time.sleep(5)  # Wait before checking again
 
     print("Flask server is ready. Proceeding to send data.")
@@ -135,11 +135,25 @@ def perform_task1(task_type,collection_time):
     }
 
     # Send the POST request
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    max_retries = 10
+    retry_count = 0
+    while retry_count < max_retries:
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response.raise_for_status()
+            print(response.status_code)
+            print(response.json())
+            return
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending data: {e}, retrying...")
+            retry_count += 1
 
-    # Print the response from the server
-    # print(response.status_code)
-    print(response.json())
+    # # Send the POST request
+    # response = requests.post(url, headers=headers, data=json.dumps(data))
+
+    # # Print the response from the server
+    # # print(response.status_code)
+    # print(response.json())
 
     
         
@@ -249,13 +263,13 @@ def check_job_status(namespace, job_name):
     try:
         job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
         if job.status.succeeded:
-            print("Job succeeded.")
+            # print("Job succeeded.")
             return True
         elif job.status.failed:
-            print("Job failed.")
+            # print("Job failed.")
             return False
         elif job.status.active:
-            print("Job is still active.")
+            # print("Job is still active.")
             return True
     except ApiException as e:
         print(f"Exception when reading Job: {e}")
@@ -266,12 +280,12 @@ def check_pod_status(namespace, job_name):
         pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
         for pod in pods.items:
             if pod.status.phase == 'Running':
-                print(f"Pod {pod.metadata.name} is running.")
+                # print(f"Pod {pod.metadata.name} is running.")
                 return True
             elif pod.status.phase == 'Pending':
-                print(f"Pod {pod.metadata.name} is pending.")
+                # print(f"Pod {pod.metadata.name} is pending.")
             elif pod.status.phase == 'Failed':
-                print(f"Pod {pod.metadata.name} has failed.")
+                # print(f"Pod {pod.metadata.name} has failed.")
         return False
     except ApiException as e:
         print(f"Exception when listing Pods: {e}")
@@ -282,7 +296,7 @@ def check_service_status(namespace, service_name):
         service = core_v1.read_namespaced_service(name=service_name, namespace=namespace)
         if service.spec.type == 'LoadBalancer':
             node_port = service.spec.ports[0].node_port
-            print(f"Service is up with NodePort: {node_port}")
+            # print(f"Service is up with NodePort: {node_port}")
             return True
         else:
             print("Service is not of type LoadBalancer.")
@@ -295,7 +309,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
     try:
         logs = core_v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
         if log_entry in logs:
-            print("Flask server is ready.")
+            # print("Flask server is ready.")
             return True
         else:
             return False
