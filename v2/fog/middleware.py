@@ -125,7 +125,7 @@ def perform_task2(message,task_type):
 
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    # print(response.text)
+    print(response.text)
 
     if task_type == 'task2':
         payload = {'message': response.text, 'task': 'task2'}
