@@ -317,7 +317,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
 
 def monitor_resources():
     # Function to capture CPU and memory usage
-    cpu_usage = psutil.cpu_percent(interval=None)
+    cpu_usage = psutil.cpu_percent(interval=0.5)
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 

@@ -85,8 +85,9 @@ def perform_task2(message,task_type):
 
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
-        print(f"CPU Usage during orchestration: {cpu_usage}%")
-        print(f"Memory Usage during orchestration: {memory_usage}%")
+        # print(f"CPU Usage during orchestration: {cpu_usage}%")
+        # print(f"Memory Usage during orchestration: {memory_usage}%")
+        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         # if not deployment_ready or not service_ready:
@@ -291,7 +292,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
 
 def monitor_resources():
     # Function to capture CPU and memory usage
-    cpu_usage = psutil.cpu_percent(interval=None)
+    cpu_usage = psutil.cpu_percent(interval=0.5)
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 
