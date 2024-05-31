@@ -59,7 +59,7 @@ def perform_task2(message,task_type):
     initial_cpu, initial_memory = monitor_resources()
     print(f"Initial CPU Usage: {initial_cpu}%")
     print(f"Initial Memory Usage: {initial_memory}%")
-    
+
     print("Starting orchestration...")
     start_time = time.time()
 
@@ -291,7 +291,7 @@ def check_flask_ready(namespace, pod_name, log_entry):
 
 def monitor_resources():
     # Function to capture CPU and memory usage
-    cpu_usage = psutil.cpu_percent(interval=1)
+    cpu_usage = psutil.cpu_percent(interval=None)
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 
