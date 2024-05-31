@@ -324,6 +324,6 @@ def monitor_resources():
 
 
 if __name__ == '__main__':
-    monitoring_thread = threading.Thread(target=continuous_monitoring, daemon=True)
-    monitoring_thread.start()
+    # monitoring_thread = threading.Thread(target=continuous_monitoring, daemon=True)
+    # monitoring_thread.start()
     app.run(host='0.0.0.0', port=5000)
