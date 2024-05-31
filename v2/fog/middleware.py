@@ -52,7 +52,7 @@ def perform_task2(message,task_type):
     # Logic for task 2
     # ...
     # print("inside thread\nsending data to fog container\n")
-    print("Message:", message)
+    # print("Message:", message)
     # print("Task:", task_type)
 
     # Monitor initial CPU and memory usage before orchestration
@@ -125,7 +125,7 @@ def perform_task2(message,task_type):
 
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
-    print(response.text)
+    # print(response.text)
 
     if task_type == 'task2':
         payload = {'message': response.text, 'task': 'task2'}
