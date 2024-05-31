@@ -81,11 +81,13 @@ def perform_task1(task_type,collection_time):
 
     # Monitor initial CPU and memory usage before orchestration
     initial_cpu, initial_memory = monitor_resources()
-    print(f"Initial CPU Usage: {initial_cpu}%")
-    print(f"Initial Memory Usage: {initial_memory}%")
+    # print(f"Initial CPU Usage: {initial_cpu}%")
+    # print(f"Initial Memory Usage: {initial_memory}%")
+    print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
 
     print("Starting orchestration...")
     start_time = time.time()
+
     deploy_pod()
     deploy_service()
 
@@ -122,6 +124,8 @@ def perform_task1(task_type,collection_time):
     orchestration_time = end_time - start_time
     print("Orchestration Time:", orchestration_time) 
 
+    flask_time = time.time()
+
     # time.sleep(1)
     # Fetch the Pod name
     pod_name = None
@@ -132,6 +136,8 @@ def perform_task1(task_type,collection_time):
     # Check Flask server readiness
     while not flask_ready:
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
+        cpu_usage, memory_usage = monitor_resources()
+        print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
         # if not flask_ready:
         #     print("Waiting for Flask server to be ready...")
             # time.sleep(5)  # Wait before checking again
@@ -139,6 +145,8 @@ def perform_task1(task_type,collection_time):
     print("Flask server is ready. Proceeding to send data.")
     end_time = time.time()
     orchestration_time = end_time - start_time
+    flask_ready_time = end_time - flask_time
+    print("flask ready time:", flask_ready_time)
     print("Orchestration Time + Flask ready time:", orchestration_time)    
 
     # time.sleep(1)
