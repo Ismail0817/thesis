@@ -52,7 +52,7 @@ def perform_task2(message,task_type):
     # Logic for task 2
     # ...
     # print("inside thread\nsending data to fog container\n")
-    # print("Message:", message)
+    print("Message:", message)
     # print("Task:", task_type)
 
     # Monitor initial CPU and memory usage before orchestration
