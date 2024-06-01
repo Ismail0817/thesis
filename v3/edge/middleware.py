@@ -1,3 +1,4 @@
+import datetime
 import json
 import subprocess
 import threading
@@ -146,6 +147,12 @@ def perform_task1(task_type,collection_time):
     end_time = time.time()
     orchestration_and_flask_ready_time = end_time - start_time
     flask_ready_time = end_time - flask_time
+    print("Orchestration Time:", orchestration_time) 
+    print("flask ready time:", flask_ready_time)
+    print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)  
+
+    # datetime.fromtimestamp(orchestration_time).strftime('%Y-%m-%d %H:%M:%S.%f')
+    print("Orchestration Time:", datetime.fromtimestamp(orchestration_time).strftime('%Y-%m-%d %H:%M:%S.%f')) 
     print("flask ready time:", flask_ready_time)
     print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)    
 

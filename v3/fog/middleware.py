@@ -12,72 +12,48 @@ from kubernetes.client.rest import ApiException
 
 app = Flask(__name__)
 
-@app.route('/container_api', methods=['POST'])
-def handle_container_api_request():
-    # Logic for handling another API request
-    # ...
-    request_data = request.get_json()
-    # print(request_data)
-    # return {'result': 'Data received in container API'}
-    # Extract the request type from the request data
-    res = request_data.get('message')
-    # task = request_data.get('task')
-    # print(res)
-    # print(task)
-    if task_type == 'task1':
-        response = requests.post('http://192.168.10.148:5003/api', json=request_data)
-        print(response.text)
-    elif task_type == 'task2':
-        payload = {'message': res, 'task': 'task2'}
-        response = requests.post('http://192.168.10.146:5000/api', json=payload)
-        print(response.text)
-        payload = {'message': "task 2 started", 'task': 'task2'}
-        response = requests.post('http://192.168.10.148:5003/api', json=payload)
-        print(response.text)
-        # print("task2 is due")
-    elif task_type == 'task3':
-        payload = {'message': res, 'task': 'task3'}
-        response = requests.post('http://192.168.10.146:5000/api', json=payload)
-        print(response.text)
-        payload = {'message': "task 2 started", 'task': 'task3'}
-        response = requests.post('http://192.168.10.148:5003/api', json=payload)
-        print(response.text)
-        # print("task2 is due")
-    return {'result': 'Data received in middleware API'}
-
 @app.route('/api', methods=['POST'])
 def handle_api_request():
     request_data = request.get_json()
     global task_type
-    # Extract the request type from the request data
-    task_type = request_data.get('message')
-    time = request_data.get('time')
-    # print(task_type)
 
-    if task_type == 'task1' or task_type == 'task2' or task_type == 'task3':
-        # Perform task 1
-        result = negotiate_edge()
+    # print(request_data)
+    # Extract the request type from the request data
+    # task_type = request_data.get('task')
+    
+    message_json = request_data['message']
+    task = request_data['task']
+
+
+    # print("Message:", message_json)
+    print("Task:", task)
+    # return {'result': 'data received in fog middleware API'}
+    # print(request_data)
+    # print(type(request_data))
+    # print(request_data.get('message'))
+
+    if task == 'task2' or task == 'task3':
+        # Perform task 2
+        result = negotiate_fog()
         # print(result) 
         # return {'result': 'data received in fog middleware API'}  
         if result == "success":
-            threading.Thread(target=perform_task1, args=(task_type,time)).start()
-            return {'result': 'Task 1 deployed successfully wait for result'}
+            threading.Thread(target=perform_task2, args=(message_json,task)).start()
+            return {'result': 'Task 2 deployed successfully wait for result'}
         else:
-            return {'result': 'Task 1 failed because of edge negotiation failure'}
+            return {'result': 'Task 2 failed because of fog negotiation failure'}
     else:
         # Invalid request type
         return {'error': 'Invalid request type'}
 
-    # return {'result': 'Task 2 deployed successfully wait for result'}
+    # return {'result': 'data received in fog middleware API'}
 
-def perform_task1(task_type,collection_time):
-    # Logic for task 1
+def perform_task2(message,task_type):
+    # Logic for task 2
     # ...
-
     # print("inside thread\nsending data to fog container\n")
-    print("Data Collection Time:", collection_time)
-    print("Task:", task_type)
-
+    # print("Message:", message)
+    # print("Task:", task_type)
 
     # Monitor initial CPU and memory usage before orchestration
     initial_cpu, initial_memory = monitor_resources()
@@ -90,22 +66,22 @@ def perform_task1(task_type,collection_time):
 
     deploy_pod()
     deploy_service()
-
+    
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
     # Define namespace, Job name, and Service name
     namespace = 'default'
-    job_name = 'run-once-job-edge'
-    service_name = 'run-once-job-edge-service'
+    deployment_name = 'fog'
+    service_name = 'fog-service'
     flask_ready_log_entry = 'Running on all addresses'
 
     # Check Job, Pod, and Service status
-    job_ready = False
+    deployment_ready = False
     service_ready = False
     flask_ready = False
 
-    while not job_ready or not service_ready:
-        job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
+    while not deployment_ready or not service_ready:
+        deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
 
         # Collect CPU and memory usage data during orchestration
@@ -114,22 +90,20 @@ def perform_task1(task_type,collection_time):
         # print(f"Memory Usage during orchestration: {memory_usage}%")
         print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
-        # if not job_ready or not service_ready:
-        #     print("Waiting for Job and Service to be ready...")
-            # time.sleep(5)  # Wait before checking again
+        # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
+        # if not deployment_ready or not service_ready:
+        #     print("Waiting for Deployment and Service to be ready...")
 
-    print("Job and Service are ready. Checking Flask server status...")
+    print("Deployment and Service are ready. Checking Flask server status...")
 
     end_time = time.time()
     orchestration_time = end_time - start_time
     print("Orchestration Time:", orchestration_time) 
 
     flask_time = time.time()
-
-    # time.sleep(1)
     # Fetch the Pod name
     pod_name = None
-    pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+    pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
     if pods.items:
         pod_name = pods.items[0].metadata.name
 
@@ -140,56 +114,35 @@ def perform_task1(task_type,collection_time):
         print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
         # if not flask_ready:
         #     print("Waiting for Flask server to be ready...")
-            # time.sleep(5)  # Wait before checking again
 
     print("Flask server is ready. Proceeding to send data.")
+
     end_time = time.time()
-    orchestration_and_flask_ready_time = end_time - start_time
+    orchestration_time = end_time - start_time
     flask_ready_time = end_time - flask_time
     print("flask ready time:", flask_ready_time)
-    print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)    
+    print("Orchestration Time + Flask ready time:", orchestration_time)  
 
-    # time.sleep(1)
-    # URL of the Flask API endpoint
-    url = 'http://192.168.1.145:30234/collect'
+    # Send data to the pod API endpoint
+    response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
+    # print(response.text)
 
-    # Data to be sent to the API
-    data = {
-        'collection_time': 5  # Specify the collection time in seconds
-    }
-
-    # Headers
-    headers = {
-        'Content-Type': 'application/json'
-    }
-
-    # Send the POST request
-    max_retries = 10
-    retry_count = 0
-    while retry_count < max_retries:
-        try:
-            response = requests.post(url, headers=headers, data=json.dumps(data))
-            response.raise_for_status()
-            print(response.status_code)
-            print(response.json())
-            return
-        except requests.exceptions.RequestException as e:
-            print(f"Error sending data: {e}, retrying...")
-            retry_count += 1
-
-    # # Send the POST request
-    # response = requests.post(url, headers=headers, data=json.dumps(data))
-
-    # # Print the response from the server
-    # # print(response.status_code)
-    # print(response.json())
-
+    if task_type == 'task2':
+        payload = {'message': response.text, 'task': 'task2'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        # Print the response from the server
+        print(response.text)
+    elif task_type == 'task3':
+        payload = {'message': response.text, 'task': 'task3'}
+        response = requests.post('http://192.168.10.147:5000/api', json=payload)
+        print(response.text)
+        payload = {'message': "task 3 started", 'task': 'task3'}
+        response = requests.post('http://192.168.10.148:5003/api', json=payload)
+        print(response.text)
+        # print("task 3 is due")
     
-        
 
-
-
-def negotiate_edge():
+def negotiate_fog():
     script_path = "/home/admin/github/thesis/new/edge/bash.sh" 
     script_output = run_shell_script(script_path)
     
@@ -214,7 +167,7 @@ def negotiate_edge():
     
     negotiation = "unsuccess"
     for node_name, values in node_data.items():
-        if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 70:
+        if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 50:
             print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
             negotiation = "success"
         else:
@@ -239,30 +192,29 @@ def run_shell_script(script_path):
         return None
 
 def deploy_pod():
-    
     # Load kubeconfig file to authenticate with the Kubernetes cluster
     config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 
-    # Create Kubernetes API client for batch operations
-    batch_v1 = client.BatchV1Api()
+    # Create Kubernetes API client
+    apps_v1 = client.AppsV1Api()
 
-    with open("manifests/job.yaml", "r") as file:
-        job_manifest = yaml.safe_load(file)
+    with open("manifests/deployment.yaml", "r") as file:
+        deployment_manifest = yaml.safe_load(file)
         try:
             # # Set the desired name for the deployment and pod
             # deployment_manifest['metadata']['name'] = "edge-deployment"
             # deployment_manifest['spec']['template']['metadata']['name'] = "edge-pod"
             
-            # Create the job in the "default" namespace
-            batch_v1.create_namespaced_job(
-                body=job_manifest, namespace="default"
+            # Create the deployment in the "default" namespace
+            apps_v1.create_namespaced_deployment(
+                body=deployment_manifest, namespace="default"
             )
             print("Deployment created successfully!")
         except Exception as e:
             print(f"Error creating Deployment: {e}")
 
             # print("pod deployed")
-    
+
 def deploy_service():
     # Load kubeconfig file to authenticate with the Kubernetes cluster
     config.load_kube_config(config_file="/etc/rancher/k3s/k3s.yaml")
@@ -286,27 +238,25 @@ def deploy_service():
 
 config.load_kube_config(config_file= "/etc/rancher/k3s/k3s.yaml")
 # Initialize API clients
-batch_v1 = client.BatchV1Api()
+app_v1 = client.AppsV1Api()
 core_v1 = client.CoreV1Api()
-def check_job_status(namespace, job_name):
-    try:
-        job = batch_v1.read_namespaced_job(name=job_name, namespace=namespace)
-        if job.status.succeeded:
-            # print("Job succeeded.")
-            return True
-        elif job.status.failed:
-            # print("Job failed.")
-            return False
-        elif job.status.active:
-            # print("Job is still active.")
-            return True
-    except ApiException as e:
-        print(f"Exception when reading Job: {e}")
-        return False
 
-def check_pod_status(namespace, job_name):
+def check_deployment_status(namespace, deployment_name):
     try:
-        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"job-name={job_name}")
+        deployment = app_v1.read_namespaced_deployment(name=deployment_name, namespace=namespace)
+        if deployment.status.ready_replicas == deployment.status.replicas:
+            # print("Deployment is ready.")
+            return True
+        else:
+            # print("Deployment is not ready.")
+            return False
+    except ApiException as e:
+        print(f"Exception when reading Deployment: {e}")
+        return False
+    
+def check_pod_status(namespace, deployment_name):
+    try:
+        pods = core_v1.list_namespaced_pod(namespace=namespace, label_selector=f"app={deployment_name}")
         for pod in pods.items:
             if pod.status.phase == 'Running':
                 # print(f"Pod {pod.metadata.name} is running.")
@@ -314,7 +264,7 @@ def check_pod_status(namespace, job_name):
             # elif pod.status.phase == 'Pending':
             #     print(f"Pod {pod.metadata.name} is pending.")
             # elif pod.status.phase == 'Failed':
-                # print(f"Pod {pod.metadata.name} has failed.")
+            #     print(f"Pod {pod.metadata.name} has failed.")
         return False
     except ApiException as e:
         print(f"Exception when listing Pods: {e}")
@@ -328,7 +278,7 @@ def check_service_status(namespace, service_name):
             # print(f"Service is up with NodePort: {node_port}")
             return True
         else:
-            print("Service is not of type LoadBalancer.")
+            print("Service is not of type NodePort.")
             return False
     except ApiException as e:
         print(f"Exception when reading Service: {e}")
@@ -352,6 +302,6 @@ def monitor_resources():
     memory_info = psutil.virtual_memory()
     return cpu_usage, memory_info.percent
 
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-    
