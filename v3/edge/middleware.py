@@ -87,7 +87,7 @@ def perform_task1(task_type,collection_time):
     print("initial usage")
     print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
     print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), initial_cpu, initial_memory)
-    print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
+    # print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
 
     print("Starting orchestration...")
     start_time = time.time()
@@ -117,7 +117,7 @@ def perform_task1(task_type,collection_time):
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
         print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
-        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        # print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
@@ -127,7 +127,7 @@ def perform_task1(task_type,collection_time):
 
     end_time = time.time()
     orchestration_time = end_time - start_time
-    print("Orchestration Time:", orchestration_time) 
+    # print("Orchestration Time:", orchestration_time) 
 
     flask_time = time.time()
 
@@ -138,11 +138,14 @@ def perform_task1(task_type,collection_time):
     if pods.items:
         pod_name = pods.items[0].metadata.name
 
+    print("\nTimestamp, Human Readable, CPU Usage %, Memory Usage %")
+
     # Check Flask server readiness
     while not flask_ready:
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
         cpu_usage, memory_usage = monitor_resources()
-        print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        # print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
         # if not flask_ready:
         #     print("Waiting for Flask server to be ready...")
             # time.sleep(5)  # Wait before checking again
@@ -152,7 +155,7 @@ def perform_task1(task_type,collection_time):
     end_time = time.time()
     orchestration_and_flask_ready_time = end_time - start_time
     flask_ready_time = end_time - flask_time
-    print("Orchestration Time:", orchestration_time) 
+    print("\nOrchestration Time:", orchestration_time) 
     print("flask ready time:", flask_ready_time)
     print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)  
 
