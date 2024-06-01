@@ -86,10 +86,10 @@ def perform_task1(task_type,collection_time):
     # print(f"Initial Memory Usage: {initial_memory}%")
     print("initial usage")
     print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
-    print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), initial_cpu, initial_memory)
+    print(time.time(),',',datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', initial_cpu,',', initial_memory)
     # print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
 
-    print("Starting orchestration...")
+    print("\nStarting orchestration...")
     start_time = time.time()
 
     deploy_pod()
@@ -108,7 +108,7 @@ def perform_task1(task_type,collection_time):
     service_ready = False
     flask_ready = False
 
-    print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
+    print("\nTimestamp, Human Readable, CPU Usage %, Memory Usage %")
 
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
@@ -116,14 +116,14 @@ def perform_task1(task_type,collection_time):
 
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
-        print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
+        print(time.time(),',',datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', cpu_usage,',', memory_usage)
         # print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
             # time.sleep(5)  # Wait before checking again
 
-    print("Job and Service are ready. Checking Flask server status...")
+    print("\nJob and Service are ready. Checking Flask server status...")
 
     end_time = time.time()
     orchestration_time = end_time - start_time
