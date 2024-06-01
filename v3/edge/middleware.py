@@ -77,13 +77,16 @@ def perform_task1(task_type,collection_time):
 
     # print("inside thread\nsending data to fog container\n")
     print("Data Collection Time:", collection_time)
-    print("Task:", task_type)
+    print("Task:", task_type, "\n")
 
 
     # Monitor initial CPU and memory usage before orchestration
     initial_cpu, initial_memory = monitor_resources()
     # print(f"Initial CPU Usage: {initial_cpu}%")
     # print(f"Initial Memory Usage: {initial_memory}%")
+    print("initial usage")
+    print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
+    print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), initial_cpu, initial_memory)
     print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
 
     print("Starting orchestration...")
@@ -113,10 +116,8 @@ def perform_task1(task_type,collection_time):
 
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
-        # print(f"CPU Usage during orchestration: {cpu_usage}%")
-        # print(f"Memory Usage during orchestration: {memory_usage}%")
-        # print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
         print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
+        print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%\n")
 
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
@@ -147,17 +148,13 @@ def perform_task1(task_type,collection_time):
             # time.sleep(5)  # Wait before checking again
 
     print("Flask server is ready. Proceeding to send data.")
+    
     end_time = time.time()
     orchestration_and_flask_ready_time = end_time - start_time
     flask_ready_time = end_time - flask_time
     print("Orchestration Time:", orchestration_time) 
     print("flask ready time:", flask_ready_time)
     print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)  
-
-    # datetime.fromtimestamp(orchestration_time).strftime('%Y-%m-%d %H:%M:%S.%f')
-    print("Orchestration Time:", datetime.fromtimestamp(orchestration_time).strftime('%Y-%m-%d %H:%M:%S.%f')) 
-    print("flask ready time:", flask_ready_time)
-    print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)    
 
     # time.sleep(1)
     # URL of the Flask API endpoint
