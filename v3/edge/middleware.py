@@ -145,12 +145,12 @@ def perform_task1(task_type,collection_time):
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
         cpu_usage, memory_usage = monitor_resources()
         # print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
-        print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
+        print(time.time(),',', datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', cpu_usage,',', memory_usage)
         # if not flask_ready:
         #     print("Waiting for Flask server to be ready...")
             # time.sleep(5)  # Wait before checking again
 
-    print("Flask server is ready. Proceeding to send data.")
+    print("\nFlask server is ready. Proceeding to send data.")
     
     end_time = time.time()
     orchestration_and_flask_ready_time = end_time - start_time

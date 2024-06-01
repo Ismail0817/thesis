@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import subprocess
 import threading
@@ -59,9 +60,12 @@ def perform_task2(message,task_type):
     initial_cpu, initial_memory = monitor_resources()
     # print(f"Initial CPU Usage: {initial_cpu}%")
     # print(f"Initial Memory Usage: {initial_memory}%")
-    print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
+    print("\ninitial usage")
+    print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
+    print(time.time(),',',datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', initial_cpu,',', initial_memory)
+    # print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%")
 
-    print("Starting orchestration...")
+    print("\nStarting orchestration...")
     start_time = time.time()
 
     deploy_pod()
@@ -80,25 +84,28 @@ def perform_task2(message,task_type):
     service_ready = False
     flask_ready = False
 
+    print("\nTimestamp, Human Readable, CPU Usage %, Memory Usage %")
+
     while not deployment_ready or not service_ready:
         deployment_ready = check_deployment_status(namespace, deployment_name) and check_pod_status(namespace, deployment_name)
         service_ready = check_service_status(namespace, service_name)
 
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
+        print(time.time(),',',datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', cpu_usage,',', memory_usage)
         # print(f"CPU Usage during orchestration: {cpu_usage}%")
         # print(f"Memory Usage during orchestration: {memory_usage}%")
-        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        # print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # print(f"Deployment ready: {deployment_ready}, Service ready: {service_ready}")
         # if not deployment_ready or not service_ready:
         #     print("Waiting for Deployment and Service to be ready...")
 
-    print("Deployment and Service are ready. Checking Flask server status...")
+    print("\nDeployment and Service are ready. Checking Flask server status...")
 
     end_time = time.time()
     orchestration_time = end_time - start_time
-    print("Orchestration Time:", orchestration_time) 
+    # print("Orchestration Time:", orchestration_time) 
 
     flask_time = time.time()
     # Fetch the Pod name
@@ -107,21 +114,25 @@ def perform_task2(message,task_type):
     if pods.items:
         pod_name = pods.items[0].metadata.name
 
+    print("\nTimestamp, Human Readable, CPU Usage %, Memory Usage %")
+
     # Check Flask server readiness
     while not flask_ready:
         flask_ready = check_flask_ready(namespace, pod_name, flask_ready_log_entry)
         cpu_usage, memory_usage = monitor_resources()
-        print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        # print(f"During Flask deploy - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        print(time.time(),',', datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'),',', cpu_usage,',', memory_usage)
         # if not flask_ready:
         #     print("Waiting for Flask server to be ready...")
 
-    print("Flask server is ready. Proceeding to send data.")
+    print("\nFlask server is ready. Proceeding to send data.")
 
     end_time = time.time()
-    orchestration_time = end_time - start_time
+    orchestration_and_flask_ready_time = end_time - start_time
     flask_ready_time = end_time - flask_time
+    print("\nOrchestration Time:", orchestration_time) 
     print("flask ready time:", flask_ready_time)
-    print("Orchestration Time + Flask ready time:", orchestration_time)  
+    print("Orchestration Time + Flask ready time:", orchestration_and_flask_ready_time)  
 
     # Send data to the pod API endpoint
     response = requests.post("http://192.168.1.146:30234/preprocess", json=message)
