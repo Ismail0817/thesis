@@ -105,6 +105,8 @@ def perform_task1(task_type,collection_time):
     service_ready = False
     flask_ready = False
 
+    print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
+
     while not job_ready or not service_ready:
         job_ready = check_job_status(namespace, job_name) and check_pod_status(namespace, job_name)
         service_ready = check_service_status(namespace, service_name)
@@ -113,7 +115,8 @@ def perform_task1(task_type,collection_time):
         cpu_usage, memory_usage = monitor_resources()
         # print(f"CPU Usage during orchestration: {cpu_usage}%")
         # print(f"Memory Usage during orchestration: {memory_usage}%")
-        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
+        # print("Timestamp, Human Readable, CPU Usage %, Memory Usage %")
+        print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
 
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
