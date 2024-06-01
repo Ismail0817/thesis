@@ -224,7 +224,7 @@ def negotiate_edge():
     
     negotiation = "unsuccess"
     for node_name, values in node_data.items():
-        if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 70:
+        if int(values['CPU%'].rstrip('%')) < 50 and int(values['MEMORY%'].rstrip('%')) < 75:
             print(f"Node: {node_name} -> CPU usage is {values['CPU%']} and memory usage is {values['MEMORY%']}")
             negotiation = "success"
         else:
