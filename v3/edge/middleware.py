@@ -117,7 +117,7 @@ def perform_task1(task_type,collection_time):
         # Collect CPU and memory usage data during orchestration
         cpu_usage, memory_usage = monitor_resources()
         print(time.time(),datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S.%f'), cpu_usage, memory_usage)
-        print(f"Initial usage - Timestamp: {time.time()}, CPU Usage: {initial_cpu}%, Memory Usage: {initial_memory}%\n")
+        print(f"During Orchestration - Timestamp: {time.time()}, CPU Usage: {cpu_usage}%, Memory Usage: {memory_usage}%")
 
         # if not job_ready or not service_ready:
         #     print("Waiting for Job and Service to be ready...")
