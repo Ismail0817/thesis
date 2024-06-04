@@ -178,7 +178,7 @@ def perform_task1(task_type,collection_time):
 
     # Data to be sent to the API
     data = {
-        'collection_time': 5  # Specify the collection time in seconds
+        'collection_time': collection_time  # Specify the collection time in seconds
     }
 
     # Headers
