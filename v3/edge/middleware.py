@@ -38,12 +38,14 @@ def handle_container_api_request():
         # print("task2 is due")
     elif task_type == 'task3':
         payload = {'message': res, 'task': 'task3'}
-        print("sending data to edge")
+
+        print("sending data to fog middleware\n")
         before_api = time.time()
         response = requests.post('http://192.168.10.146:5000/api', json=payload)
         after_api = time.time()
-        print(response.text)
         print("API call time:", after_api - before_api)
+        print(response.text)
+
         payload = {'message': "task 2 started", 'task': 'task3'}
         response = requests.post('http://192.168.10.148:5003/api', json=payload)
         print(response.text)

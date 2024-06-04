@@ -145,8 +145,14 @@ def perform_task2(message,task_type):
         print(response.text)
     elif task_type == 'task3':
         payload = {'message': response.text, 'task': 'task3'}
+
+        print("sending data to Cloud middleware")
+        before_api = time.time()
         response = requests.post('http://192.168.10.147:5000/api', json=payload)
+        after_api = time.time()
+        print("API call time:", after_api - before_api)
         print(response.text)
+        
         payload = {'message': "task 3 started", 'task': 'task3'}
         response = requests.post('http://192.168.10.148:5003/api', json=payload)
         print(response.text)

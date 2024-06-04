@@ -166,8 +166,12 @@ def perform_task3(message,task_type):
     print("Computation Ended")
     print(response.text)
 
+    print("sending data to user")
+    before_api = time.time()
     payload = {'message': response.text, 'task': 'task3'}
     response = requests.post('http://192.168.10.148:5003/api', json=payload)
+    after_api = time.time()
+    print("API call time:", after_api - before_api)
     # Print the response from the server
     print(response.text)
 
