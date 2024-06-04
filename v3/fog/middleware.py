@@ -146,13 +146,20 @@ def perform_task2(message,task_type):
     elif task_type == 'task3':
         payload = {'message': response.text, 'task': 'task3'}
 
+        # Serialize the payload to JSON
+        payload_json = json.dumps(payload)
+        # Calculate the size of the JSON payload in bytes
+        payload_size = len(payload_json.encode('utf-8'))
+        # Print the payload size
+        print(f"Payload size: {payload_size} bytes\n")
+
         print("sending data to Cloud middleware")
         before_api = time.time()
         response = requests.post('http://192.168.10.147:5000/api', json=payload)
         after_api = time.time()
         print("API call time:", after_api - before_api)
         print(response.text)
-        
+
         payload = {'message': "task 3 started", 'task': 'task3'}
         response = requests.post('http://192.168.10.148:5003/api', json=payload)
         print(response.text)

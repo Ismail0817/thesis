@@ -166,9 +166,17 @@ def perform_task3(message,task_type):
     print("Computation Ended")
     print(response.text)
 
+    payload = {'message': response.text, 'task': 'task3'}
+    # Serialize the payload to JSON
+    payload_json = json.dumps(payload)
+    # Calculate the size of the JSON payload in bytes
+    payload_size = len(payload_json.encode('utf-8'))
+    # Print the payload size
+    print(f"Payload size: {payload_size} bytes\n")
+    
     print("sending data to user")
     before_api = time.time()
-    payload = {'message': response.text, 'task': 'task3'}
+
     response = requests.post('http://192.168.10.148:5003/api', json=payload)
     after_api = time.time()
     print("API call time:", after_api - before_api)
