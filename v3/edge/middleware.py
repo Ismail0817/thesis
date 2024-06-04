@@ -39,7 +39,16 @@ def handle_container_api_request():
     elif task_type == 'task3':
         payload = {'message': res, 'task': 'task3'}
 
-        print("sending data to fog middleware\n")
+        # Serialize the payload to JSON
+        payload_json = json.dumps(payload)
+
+        # Calculate the size of the JSON payload in bytes
+        payload_size = len(payload_json.encode('utf-8'))
+
+        # Print the payload size
+        print(f"Payload size: {payload_size} bytes\n")
+
+        print("sending data to fog middleware")
         before_api = time.time()
         response = requests.post('http://192.168.10.146:5000/api', json=payload)
         after_api = time.time()
